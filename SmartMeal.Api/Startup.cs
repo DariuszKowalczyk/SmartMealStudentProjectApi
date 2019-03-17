@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SmartMeal.Data.Data;
 using System.Reflection;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace SmartMeal.Api
 {
@@ -38,6 +39,14 @@ namespace SmartMeal.Api
             string migrationAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
             services.AddEntityFrameworkNpgsql().AddDbContext<SmartMealContext>(options => 
                 options.UseNpgsql(connectionString, b => b.MigrationsAssembly(migrationAssembly)));
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "Smart Meal", Version = "v1" });
+            });
+
+
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -48,8 +57,14 @@ namespace SmartMeal.Api
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Smart Meal V1");
+            });
             app.UseMvc();
+            
+
         }
     }
 }
