@@ -7,6 +7,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartMeal.Tests", "SmartMea
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartMeal.Api", "SmartMeal.Api\SmartMeal.Api.csproj", "{D3191186-DF0F-4EA2-B434-A75ACFC7ACBC}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartMeal.Data", "SmartMeal.Data\SmartMeal.Data.csproj", "{6F2BEAF8-0016-457A-8C24-A0D13CF9AD98}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{234121CB-74FE-4EBB-B39B-433FC113AF4D}"
+	ProjectSection(SolutionItems) = preProject
+		.env = .env
+		.env.default = .env.default
+		.gitignore = .gitignore
+		docker-compose.yml = docker-compose.yml
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartMeal.Models", "SmartMeal.Models\SmartMeal.Models.csproj", "{840772EC-A386-476C-B7A4-FE203C69BF12}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +34,14 @@ Global
 		{D3191186-DF0F-4EA2-B434-A75ACFC7ACBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3191186-DF0F-4EA2-B434-A75ACFC7ACBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3191186-DF0F-4EA2-B434-A75ACFC7ACBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F2BEAF8-0016-457A-8C24-A0D13CF9AD98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F2BEAF8-0016-457A-8C24-A0D13CF9AD98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F2BEAF8-0016-457A-8C24-A0D13CF9AD98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F2BEAF8-0016-457A-8C24-A0D13CF9AD98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{840772EC-A386-476C-B7A4-FE203C69BF12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{840772EC-A386-476C-B7A4-FE203C69BF12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{840772EC-A386-476C-B7A4-FE203C69BF12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{840772EC-A386-476C-B7A4-FE203C69BF12}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
