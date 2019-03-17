@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SmartMeal.Data\SmartMeal.Data.csproj" />
+    <ProjectReference Include="..\SmartMeal.Migrations\SmartMeal.Migrations.csproj" />
   </ItemGroup>
 
 </Project>

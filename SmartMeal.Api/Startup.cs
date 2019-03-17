@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SmartMeal.Data.Data;
-using System.Reflection;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace SmartMeal.Api
@@ -25,7 +24,7 @@ namespace SmartMeal.Api
             string db = DotNetEnv.Env.GetString("POSTGRES_DB");
             string user = DotNetEnv.Env.GetString("POSTGRES_USER");
             string password = DotNetEnv.Env.GetString("POSTGRES_PASSWORD");
-            string connectionString = $"host={host};port={port};database={db};username={user};password={password};";
+            string connectionString = $"Host={host};Port={port};Database={db};Username={user};Password={password};";
 
             return connectionString;
         }
@@ -36,9 +35,8 @@ namespace SmartMeal.Api
         public void ConfigureServices(IServiceCollection services)
         {
             string connectionString = GetConnectionString();
-            string migrationAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-            services.AddEntityFrameworkNpgsql().AddDbContext<SmartMealContext>(options => 
-                options.UseNpgsql(connectionString, b => b.MigrationsAssembly(migrationAssembly)));
+            services.AddDbContext<SmartMealContext>(options => options.UseNpgsql(
+                connectionString, b => b.MigrationsAssembly("SmartMeal.Migrations")));
 
             services.AddSwaggerGen(c =>
             {
@@ -62,6 +60,11 @@ namespace SmartMeal.Api
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Smart Meal V1");
             });
+
+            using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                scope.ServiceProvider.GetRequiredService<SmartMealContext>().Database.Migrate();
+            }
             app.UseMvc();
             
 
