@@ -20,7 +20,7 @@ namespace SmartMeal.Data
             string db = DotNetEnv.Env.GetString("POSTGRES_DB");
             string user = DotNetEnv.Env.GetString("POSTGRES_USER");
             string password = DotNetEnv.Env.GetString("POSTGRES_PASSWORD");
-            string connectionString = $"host={host};port={port};database={db};username={user};password={password};";
+            string connectionString = $"Host={host};Port={port};Database={db};Username={user};Password={password};";
 
             return connectionString;
         }
@@ -29,10 +29,7 @@ namespace SmartMeal.Data
         {
             var connectionString = GetConnectionString();
             var builder = new DbContextOptionsBuilder<SmartMealContext>();
-            builder.UseSqlServer(connectionString,
-                optionsBuilder =>
-                    optionsBuilder.MigrationsAssembly((typeof(SmartMealContext).GetTypeInfo().Assembly.GetName()
-                        .Name)));
+            builder.UseNpgsql(connectionString, b => b.MigrationsAssembly("SmartMeal.Migrations"));
 
             return new SmartMealContext(builder.Options);
         }
