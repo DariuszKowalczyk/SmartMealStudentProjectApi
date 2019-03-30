@@ -35,8 +35,8 @@ namespace SmartMeal.Api
         public void ConfigureServices(IServiceCollection services)
         {
             string connectionString = GetConnectionString();
-            services.AddDbContext<SmartMealContext>(options => options.UseNpgsql(
-                connectionString, b => b.MigrationsAssembly("SmartMeal.Migrations")));
+            services.AddDbContext<AppDbContext>(options => options.UseNpgsql(
+                connectionString, b => b.MigrationsAssembly("SmartMeal.Data")));
 
             services.AddSwaggerGen(c =>
             {
@@ -63,8 +63,9 @@ namespace SmartMeal.Api
 
             using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
-                scope.ServiceProvider.GetRequiredService<SmartMealContext>().Database.Migrate();
+                scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.Migrate();
             }
+
             app.UseMvc();
             
 

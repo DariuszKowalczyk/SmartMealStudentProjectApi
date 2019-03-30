@@ -17,6 +17,7 @@ namespace SmartMeal.Api.Controllers
             _accountService = accountService;
         }
 
+        [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody]RegisterDto registerDto)
         {
             if (!ModelState.IsValid)

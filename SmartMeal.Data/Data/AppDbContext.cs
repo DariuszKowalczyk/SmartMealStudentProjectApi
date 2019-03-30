@@ -3,11 +3,11 @@ using SmartMeal.Models.Models;
 
 namespace SmartMeal.Data.Data
 {
-    public class SmartMealContext : DbContext
+    public class AppDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
 
-        public SmartMealContext(DbContextOptions<SmartMealContext> options) : base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         { 
         }
 

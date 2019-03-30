@@ -19,8 +19,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartMeal.Models", "SmartMeal.Models\SmartMeal.Models.csproj", "{840772EC-A386-476C-B7A4-FE203C69BF12}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartMeal.Migrations", "SmartMeal.Migrations\SmartMeal.Migrations.csproj", "{68D99A6C-4F8B-4393-BAB1-8C8B12E628EC}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartMeal.Service", "SmartMeal.Service\SmartMeal.Service.csproj", "{8946F37B-7F81-43CD-A9AB-4FA695C525CE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartMeal.Tests", "SmartMeal.Tests\SmartMeal.Tests.csproj", "{97751ECD-79B2-4529-8AFF-29F94C27F05C}"
@@ -43,10 +41,6 @@ Global
 		{840772EC-A386-476C-B7A4-FE203C69BF12}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{840772EC-A386-476C-B7A4-FE203C69BF12}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{840772EC-A386-476C-B7A4-FE203C69BF12}.Release|Any CPU.Build.0 = Release|Any CPU
-		{68D99A6C-4F8B-4393-BAB1-8C8B12E628EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{68D99A6C-4F8B-4393-BAB1-8C8B12E628EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{68D99A6C-4F8B-4393-BAB1-8C8B12E628EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{68D99A6C-4F8B-4393-BAB1-8C8B12E628EC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8946F37B-7F81-43CD-A9AB-4FA695C525CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8946F37B-7F81-43CD-A9AB-4FA695C525CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8946F37B-7F81-43CD-A9AB-4FA695C525CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
