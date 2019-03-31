@@ -21,7 +21,8 @@ namespace SmartMeal.Tests.UnitTests
             // Arrange
             var registerData = new RegisterDto()
             {
-                Email = "test@test.pl"
+                Email = "test@test.pl",
+                Password = "test"
             };
             IActionResult result = new OkResult();
 
@@ -34,6 +35,7 @@ namespace SmartMeal.Tests.UnitTests
             var response = await AccountController.Register(registerData);
             // Assert
             Assert.IsType<OkResult>(response);
+            
         }
     }
 }

@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using SmartMeal.Data.Repository.Interfaces;
+using SmartMeal.Models;
 using SmartMeal.Models.Models;
 using SmartMeal.Models.ModelsDto;
 using SmartMeal.Service.Interfaces;
@@ -17,9 +19,23 @@ namespace SmartMeal.Service.Services
             _userRepository = userRepository;
         }
 
-        public Task<bool> CreateUserAsync(RegisterDto user)
+        public async Task<bool> CreateUserAsync(RegisterDto user)
         {
-            throw new NotImplementedException();
+            var userExist = await _userRepository.AnyExist(x => x.Email == user.Email);
+
+            if (userExist)
+            {
+                throw new SmartMealException(Error.UserExist);
+            }
+            var newUser = new User()
+            {
+                Email = user.Email,
+                Password = HashManager.GetHash(user.Password)
+            };
+
+            var is_created = await _userRepository.CreateAsync(newUser);
+
+            return is_created;
         }
     }
 }

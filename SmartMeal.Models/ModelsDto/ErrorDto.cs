@@ -4,9 +4,8 @@ using System.Text;
 
 namespace SmartMeal.Models.ModelsDto
 {
-    public class RegisterDto
+    public class ErrorDto
     {
-        public string Email { get; set; }
-        public string Password { get; set; }
+        public List<string> errors;
     }
 }
