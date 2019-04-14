@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using SmartMeal.Api.Controllers;
+using SmartMeal.Data.Data;
+using SmartMeal.Data.Repository;
 using SmartMeal.Data.Repository.Interfaces;
 using SmartMeal.Models.Models;
 using SmartMeal.Models.ModelsDto;
@@ -15,9 +18,15 @@ namespace SmartMeal.Tests.UnitTests
 {
     public class TestRegisterUser
     {
+
+        public TestRegisterUser()
+        {
+
+        }
         [Fact]
         public async void ShouldRegisterNewUser()
         {
+
             // Arrange
             var registerData = new RegisterDto()
             {
@@ -29,13 +38,27 @@ namespace SmartMeal.Tests.UnitTests
             var userRepository = new Mock<IRepository<User>>();
             userRepository.Setup(x => x.CreateAsync(new User())).Returns(Task.FromResult(true));
             var accountService = new AccountService(userRepository.Object);
-            var AccountController = new AccountController(accountService);
+            var accountController = new AccountController(accountService);
 
             // Act
-            var response = await AccountController.Register(registerData);
+            var response = await accountController.Register(registerData);
             // Assert
             Assert.IsType<OkResult>(response);
-            
+        }
+
+        [Fact]
+        public async void InvalidEmail()
+        {
+            // Arrange
+            var repository = new Mock<IRepository<User>>();
+            var service = new AccountService(repository.Object);
+            var controller = new AccountController(service);
+            controller.ModelState.AddModelError("error", "some error");
+            // Act
+            var response = await controller.Register(model: null);
+
+            // Assert
+            Assert.IsType<BadRequestObjectResult>(response);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SmartMeal.Models;
@@ -22,20 +23,17 @@ namespace SmartMeal.Api.Controllers
 
         [Route("register")]
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody]RegisterDto registerDto)
+        public async Task<IActionResult> Register([FromBody]RegisterDto model)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new ErrorDto
-                {
-                    errors = new List<string> { Error.RegisterDtoIsNotValid }
-                });
+                return BadRequest(ModelState.Values.SelectMany(x => x.Errors.Select(y=>y.ErrorMessage)));
             }
 
             try
             {
-                await _accountService.CreateUserAsync(registerDto);
-                
+                await _accountService.CreateUserAsync(model);
+                return Ok();
             }
             catch (SmartMealException exception)
             {
@@ -44,7 +42,6 @@ namespace SmartMeal.Api.Controllers
                     errors = exception.errors
                 });
             }
-            return Ok();
         }
     }
 }
