@@ -5,7 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="2.2.0" />
+    <ProjectReference Include="..\SmartMeal.Data\SmartMeal.Data.csproj" />
+    <ProjectReference Include="..\SmartMeal.Models\SmartMeal.Models.csproj" />
   </ItemGroup>
 
 </Project>

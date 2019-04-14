@@ -1,10 +1,16 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.IO;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SmartMeal.Data.Data;
+using SmartMeal.Data.Repository;
+using SmartMeal.Data.Repository.Interfaces;
+using SmartMeal.Models.Models;
+using SmartMeal.Service.Interfaces;
+using SmartMeal.Service.Services;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace SmartMeal.Api
@@ -14,11 +20,16 @@ namespace SmartMeal.Api
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            DotNetEnv.Env.Load("../.env");
         }
 
         private string GetConnectionString()
         {
+            string solution_path = Path.GetDirectoryName(System.IO.Directory.GetCurrentDirectory());
+            string env_path = $"{solution_path}/.env";
+            if (File.Exists(env_path))
+            {
+                DotNetEnv.Env.Load(env_path);
+            }
             string host = DotNetEnv.Env.GetString("POSTGRES_HOST");
             string port = DotNetEnv.Env.GetString("POSTGRES_PORT");
             string db = DotNetEnv.Env.GetString("POSTGRES_DB");
@@ -35,15 +46,20 @@ namespace SmartMeal.Api
         public void ConfigureServices(IServiceCollection services)
         {
             string connectionString = GetConnectionString();
-            services.AddDbContext<SmartMealContext>(options => options.UseNpgsql(
-                connectionString, b => b.MigrationsAssembly("SmartMeal.Migrations")));
+            services.AddDbContext<AppDbContext>(options => options.UseNpgsql(
+                connectionString, b => b.MigrationsAssembly("SmartMeal.Data")));
 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "Smart Meal", Version = "v1" });
             });
 
+            // Add services
+            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<DbContext, AppDbContext>();
 
+            //Add repository
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -61,10 +77,11 @@ namespace SmartMeal.Api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Smart Meal V1");
             });
 
-            using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
-            {
-                scope.ServiceProvider.GetRequiredService<SmartMealContext>().Database.Migrate();
-            }
+//            using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+//            {
+//                scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.Migrate();
+//            }
+
             app.UseMvc();
             
 

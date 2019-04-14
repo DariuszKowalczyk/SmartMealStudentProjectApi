@@ -7,15 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentAssertions.AspNetCore.Mvc" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.0.2105168" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.4.10" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SmartMeal.Data\SmartMeal.Data.csproj" />
-    <ProjectReference Include="..\SmartMeal.Migrations\SmartMeal.Migrations.csproj" />
+    <ProjectReference Include="..\SmartMeal.Models\SmartMeal.Models.csproj" />
+    <ProjectReference Include="..\SmartMeal.Service\SmartMeal.Service.csproj" />
   </ItemGroup>
 
 </Project>

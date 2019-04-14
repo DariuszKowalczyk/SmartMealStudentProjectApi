@@ -9,7 +9,7 @@ using SmartMeal.Data.Data;
 
 namespace SmartMeal.Data
 {
-    class MyDbContextFactory : IDesignTimeDbContextFactory<SmartMealContext>
+    class MyDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     {
 
         private string GetConnectionString()
@@ -25,13 +25,13 @@ namespace SmartMeal.Data
             return connectionString;
         }
 
-        public SmartMealContext CreateDbContext(string[] args)
+        public AppDbContext CreateDbContext(string[] args)
         {
             var connectionString = GetConnectionString();
-            var builder = new DbContextOptionsBuilder<SmartMealContext>();
-            builder.UseNpgsql(connectionString, b => b.MigrationsAssembly("SmartMeal.Migrations"));
+            var builder = new DbContextOptionsBuilder<AppDbContext>();
+            builder.UseNpgsql(connectionString, b => b.MigrationsAssembly("SmartMeal.Data"));
 
-            return new SmartMealContext(builder.Options);
+            return new AppDbContext(builder.Options);
         }
     }
 }
