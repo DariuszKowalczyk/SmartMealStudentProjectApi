@@ -36,16 +36,16 @@ namespace SmartMeal.Tests.UnitTests
             IActionResult result = new OkResult();
 
             var userRepository = new Mock<IRepository<User>>();
-            userRepository.Setup(x => x.CreateAsync(new User())).Returns(Task.FromResult(true));
+            userRepository.Setup(x => x.CreateAsync(It.IsAny<User>())).Returns(Task.FromResult(true));
             var accountService = new AccountService(userRepository.Object);
             var accountController = new AccountController(accountService);
 
             // Act
             var response = await accountController.Register(registerData);
             // Assert
-            Assert.IsType<OkResult>(response);
+            Assert.IsType<OkResult>(response); 
         }
-
+        
         [Fact]
         public async void InvalidEmail()
         {

@@ -27,21 +27,25 @@ namespace SmartMeal.Api.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState.Values.SelectMany(x => x.Errors.Select(y=>y.ErrorMessage)));
+                return BadRequest(ModelState.Values.SelectMany(x => x.Errors.Select(y => y.ErrorMessage)));
             }
 
-            try
+            var result = await _accountService.CreateUserAsync(model);
+            if (result)
             {
-                await _accountService.CreateUserAsync(model);
                 return Ok();
             }
-            catch (SmartMealException exception)
+            else
             {
-                return BadRequest(new ErrorDto
-                {
-                    errors = exception.errors
-                });
+                return Conflict(ModelState);
             }
+            //catch (SmartMealException exception)
+            //{
+            //    return BadRequest(new ErrorDto
+            //    {
+            //        errors = exception.errors
+            //    });
+            //}
         }
     }
 }
