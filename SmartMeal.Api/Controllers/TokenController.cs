@@ -40,7 +40,7 @@ namespace SmartMeal.Api.Controllers
 
             if (token != null)
             {
-                response = Ok(token);
+                return Ok(token);
             }
 
             return response;

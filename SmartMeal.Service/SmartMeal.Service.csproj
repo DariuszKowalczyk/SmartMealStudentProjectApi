@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="5.4.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SmartMeal.Data\SmartMeal.Data.csproj" />
     <ProjectReference Include="..\SmartMeal.Models\SmartMeal.Models.csproj" />
   </ItemGroup>
