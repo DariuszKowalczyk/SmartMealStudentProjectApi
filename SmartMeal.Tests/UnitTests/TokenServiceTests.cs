@@ -27,7 +27,7 @@ namespace SmartMeal.Tests.UnitTests
 
 
         [Fact]
-        public async void given_token_and_success_authentication()
+        public void given_token_and_success_authentication()
         {
             var loginDto = new LoginDto()
             {
@@ -41,16 +41,16 @@ namespace SmartMeal.Tests.UnitTests
             };
             _userRepository.Setup(x => x.GetByAsync(It.IsAny<Expression<Func<User, bool>>>())).Returns(Task.FromResult(user));
              
-            var tokenService = new TokenService(_config.Object, _userRepository.Object);
+            var tokenService = new AuthService(_config.Object, _userRepository.Object);
 
-            var result = await tokenService.Authenticate(loginDto);
+            var result = tokenService.Authenticate(user);
 
             Assert.IsType<AuthDto>(result);
 
         }
 
         [Fact]
-        public async void given_wrong_data_should_return_false()
+        public void given_wrong_data_should_return_false()
         {
             var loginDto = new LoginDto()
             {
@@ -59,9 +59,9 @@ namespace SmartMeal.Tests.UnitTests
             };
             _userRepository.Setup(x => x.GetByAsync(It.IsAny<Expression<Func<User, bool>>>())).Returns(Task.FromResult<User>(null));
 
-            var tokenService = new TokenService(_config.Object, _userRepository.Object);
+            var tokenService = new AuthService(_config.Object, _userRepository.Object);
 
-            var result = await tokenService.Authenticate(loginDto);
+            var result = tokenService.Authenticate(null);
 
             Assert.Null(result);
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using SmartMeal.Service;
 
 namespace SmartMeal.Models.ModelsDto
 {
@@ -8,6 +9,12 @@ namespace SmartMeal.Models.ModelsDto
     {
         public string Email { get; set; }
 
-        public string Password { get; set; }
+        private string _password;
+
+        public string Password
+        {
+            get { return _password; }
+            set { _password = HashManager.GetHash(value); }
+        }
     }
 }

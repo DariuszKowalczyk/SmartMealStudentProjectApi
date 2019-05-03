@@ -14,32 +14,35 @@ using SmartMeal.Service.Interfaces;
 
 namespace SmartMeal.Service.Services
 {
-    public class TokenService : ITokenService
+    public class AuthService : IAuthService
     {
-        private readonly IRepository<User> _repository;
+        private readonly IRepository<User> _userRepository;
         private readonly IConfiguration _config;
 
-        public TokenService(IConfiguration config, IRepository<User> repository)
+        public AuthService(IConfiguration config, IRepository<User> repository)
         {
-            _repository = repository;
+            _userRepository = repository;
             _config = config;
         }
 
-        public async Task<AuthDto> Authenticate(LoginDto model)
+        public async Task<User> GetUserAsync(LoginDto login)
         {
-            var user = await _repository.GetByAsync(x => x.Email == model.Email && x.Password == HashManager.GetHash(model.Password));
+            return await _userRepository.GetByAsync(x => x.Email == login.Email && x.Password == login.Password);
+        }
 
-
+        public AuthDto Authenticate(User user)
+        {
+            AuthDto auth = null;
             if (user != null)
             {
                 var token = BuildToken(user);
-                return new AuthDto()
+                auth = new AuthDto()
                 {
                     Token = token
                 };
             }
 
-            return null;
+            return auth;
         }
 
         private string BuildToken(User user)

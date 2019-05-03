@@ -23,6 +23,7 @@ namespace SmartMeal.Data.Repository
         {
             await _dbSet.AddAsync(entity);
             return await SaveAsync();
+            
         }
 
         public async Task<T> GetByAsync(Expression<Func<T, bool>> expression)
