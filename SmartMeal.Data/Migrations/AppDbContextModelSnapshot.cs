@@ -26,8 +26,9 @@ namespace SmartMeal.Data.Migrations
                     b.Property<string>("Email")
                         .IsRequired();
 
-                    b.Property<string>("Password")
-                        .IsRequired();
+                    b.Property<long>("FacebookId");
+
+                    b.Property<string>("Password");
 
                     b.HasKey("Id");
 

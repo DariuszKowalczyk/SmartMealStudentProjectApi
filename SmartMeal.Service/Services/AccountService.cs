@@ -19,6 +19,12 @@ namespace SmartMeal.Service.Services
             _userRepository = userRepository;
         }
 
+
+        public async Task<User> GetUserAsync(LoginDto login)
+        {
+            return await _userRepository.GetByAsync(x => x.Email == login.Email && x.Password ==login.Password);
+        }
+
         public async Task<bool> CreateUserAsync(RegisterDto user)
         {
             var userExist = await _userRepository.AnyExist(x => x.Email == user.Email);

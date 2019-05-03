@@ -7,9 +7,10 @@ using SmartMeal.Models.ModelsDto;
 
 namespace SmartMeal.Service.Interfaces
 {
-    public interface IAccountService
+    public interface IFacebookService
     {
-        Task<User> GetUserAsync(LoginDto login);
-        Task<bool> CreateUserAsync(RegisterDto user);
+        Task<FacebookUserData> Authentication(FacebookAuthDto model);
+        Task<User> GetUser(FacebookUserData model);
+        Task<User> Register(FacebookUserData data);
     }
 }

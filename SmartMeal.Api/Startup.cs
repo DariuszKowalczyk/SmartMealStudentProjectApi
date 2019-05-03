@@ -1,9 +1,11 @@
 ﻿using System.IO;
 using System.Text;
+using FluentAssertions.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebSockets.Internal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -59,8 +61,9 @@ namespace SmartMeal.Api
 
             // Add services
             services.AddScoped<IAccountService, AccountService>();
-            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<DbContext, AppDbContext>();
+            services.AddScoped<IFacebookService, FacebookService>();
 
             //Add repository
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
@@ -79,6 +82,8 @@ namespace SmartMeal.Api
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
                 };
             });
+
+            
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

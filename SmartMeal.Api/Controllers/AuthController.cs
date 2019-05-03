@@ -15,14 +15,14 @@ namespace SmartMeal.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TokenController : ControllerBase
+    public class AuthController : ControllerBase
     {
         
-        private readonly ITokenService _tokenService;
+        private readonly IAuthService _authService;
 
-        public TokenController(ITokenService tokenService)
+        public AuthController(IAuthService authService)
         {
-            _tokenService = tokenService;
+            _authService = authService;
         }
 
         [AllowAnonymous]
@@ -36,13 +36,16 @@ namespace SmartMeal.Api.Controllers
 
             IActionResult response = Unauthorized();
 
-            var token = await _tokenService.Authenticate(login);
-
-            if (token != null)
+            var user = await _authService.GetUserAsync(login);
+            if (user != null)
             {
-                return Ok(token);
+                var token = _authService.Authenticate(user);
+                if(token != null)
+                {
+                    response = Ok(token);
+                }
             }
-
+            
             return response;
         }
     }

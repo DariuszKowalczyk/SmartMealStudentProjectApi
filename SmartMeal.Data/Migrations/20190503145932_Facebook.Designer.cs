@@ -9,8 +9,8 @@ using SmartMeal.Data.Data;
 namespace SmartMeal.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20190502192100_Token")]
-    partial class Token
+    [Migration("20190503145932_Facebook")]
+    partial class Facebook
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -28,8 +28,9 @@ namespace SmartMeal.Data.Migrations
                     b.Property<string>("Email")
                         .IsRequired();
 
-                    b.Property<string>("Password")
-                        .IsRequired();
+                    b.Property<long>("FacebookId");
+
+                    b.Property<string>("Password");
 
                     b.HasKey("Id");
 

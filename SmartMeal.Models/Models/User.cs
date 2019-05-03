@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Data;
 using Microsoft.AspNetCore.Identity;
 
 namespace SmartMeal.Models.Models
@@ -9,7 +10,10 @@ namespace SmartMeal.Models.Models
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
         public string Password { get; set; }
+
+        public long FacebookId { get; set; }
+
+
     }
 }
