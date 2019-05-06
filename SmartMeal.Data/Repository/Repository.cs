@@ -19,6 +19,14 @@ namespace SmartMeal.Data.Repository
             _dbContext = context;
             _dbSet = context.Set<T>();
         }
+
+        public async Task<bool> RemoveElement(T entity)
+        {
+            _dbSet.Remove(entity);
+            return await SaveAsync();
+
+        }
+
         public async Task<bool> CreateAsync(T entity)
         {
             await _dbSet.AddAsync(entity);
