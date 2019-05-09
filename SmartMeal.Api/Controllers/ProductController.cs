@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SmartMeal.Models.ModelsDto;
@@ -58,7 +59,7 @@ namespace SmartMeal.Api.Controllers
         public async Task<string> UploadProductImage([FromForm(Name = "file")] IFormFile file)
         {
             var filePath = Directory.GetCurrentDirectory() + "\\ProductImages\\" + file.FileName;
-                if (file.Length > 0)
+            if (file.Length > 0)
                 {
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
@@ -66,10 +67,11 @@ namespace SmartMeal.Api.Controllers
                         await file.CopyToAsync(stream);
                     }
                 }
-            return filePath;
+            return $"{file.FileName}";
         }
+
         [HttpGet]
-        [Route("getProduct")]
+        [Route("get{id}")]
         public async Task<IActionResult> GetSingleProduct(long id)
         {
             var result = await _productService.GetProductById(id);
@@ -81,6 +83,20 @@ namespace SmartMeal.Api.Controllers
             return BadRequest();
             
         }
+
+        [HttpGet]
+        [Route("get")]
+        public async Task<IActionResult> GetProducts()
+        {
+            var result = await _productService.GetProducts();
+
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return BadRequest();
+        }
+
 
     }
 }

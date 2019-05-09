@@ -34,6 +34,11 @@ namespace SmartMeal.Data.Repository
             
         }
 
+        public async Task<List<T>> GetAllAsync()
+        {
+            return await _dbContext.Set<T>().ToListAsync();
+        }
+
         public async Task<T> GetByAsync(Expression<Func<T, bool>> expression)
         {
             return await _dbSet.FirstOrDefaultAsync(expression);

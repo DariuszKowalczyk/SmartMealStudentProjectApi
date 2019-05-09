@@ -13,5 +13,6 @@ namespace SmartMeal.Data.Repository.Interfaces
         Task<T> GetByAsync(Expression<Func<T, bool>> expression);
         Task<bool> AnyExist(Expression<Func<T, bool>> expression);
         Task<bool> RemoveElement(T entity);
+        Task<List<T>> GetAllAsync();
     }
 }

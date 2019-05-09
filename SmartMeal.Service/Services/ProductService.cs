@@ -32,6 +32,7 @@ namespace SmartMeal.Service.Services
             {
                 Name = product.Name,
                 Description = product.Description,
+                ImagePath = product.ImagePath,
             };
 
             var is_created = await _productRepository.CreateAsync(newProduct);
@@ -52,11 +53,21 @@ namespace SmartMeal.Service.Services
         public async Task<Product> GetProductById(long id)
         {
             var product = await _productRepository.GetByAsync(x => x.Id == id);
+            product.ImagePath = $"/static/images/{product.ImagePath}";
             if (product != null)
             {
                 return product;
             }
+            return null;
+        }
 
+        public async Task<List<Product>> GetProducts()
+        {
+            var products = await _productRepository.GetAllAsync();
+            if(products != null)
+            {
+                return products;
+            }
             return null;
         }
 

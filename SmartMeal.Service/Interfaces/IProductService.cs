@@ -12,6 +12,7 @@ namespace SmartMeal.Service.Interfaces
         Task<bool> CreateProductAsync(ProductDto product);
         Task<bool> DeleteProductAsync(long id);
         Task<Product> GetProductById(long id);
+        Task<List<Product>> GetProducts();
 
     }
 }

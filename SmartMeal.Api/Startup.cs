@@ -96,10 +96,10 @@ namespace SmartMeal.Api
 
             app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), "ProductImages")),
-                RequestPath = "/api/Product/getProduct"
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "ProductImages")),
+                RequestPath = "/static/images"
             });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

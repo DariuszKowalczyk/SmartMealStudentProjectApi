@@ -20,8 +20,4 @@
     <ProjectReference Include="..\SmartMeal.Service\SmartMeal.Service.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ProductImages\" />
-  </ItemGroup>
-
 </Project>
