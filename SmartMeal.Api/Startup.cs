@@ -94,9 +94,15 @@ namespace SmartMeal.Api
         {
             app.UseCors(builder =>builder.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod());
 
+            string ImagePath = Path.Combine(env.ContentRootPath, "Images");
+            if (!Directory.Exists(ImagePath))
+            {
+                Directory.CreateDirectory(ImagePath);
+            }
+
             app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "ProductImages")),
+                FileProvider = new PhysicalFileProvider(ImagePath),
                 RequestPath = "/static/images"
             });
 
