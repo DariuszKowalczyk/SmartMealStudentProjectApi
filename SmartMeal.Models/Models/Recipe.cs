@@ -1,19 +1,18 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Identity;
-
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace SmartMeal.Models.Models
 {
-    public class Product : Entity
+    public class Recipe : Entity
     {
-        [Required]
         public string Name { get; set; }
-        [Required]
+
         public string Description { get; set; }
 
         public string ImagePath { get; set; }
 
         public ICollection<Ingredient> Ingredients { get; set; }
+
     }
 }
