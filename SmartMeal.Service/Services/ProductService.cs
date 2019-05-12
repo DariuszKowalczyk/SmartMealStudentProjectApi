@@ -46,6 +46,11 @@ namespace SmartMeal.Service.Services
             {
                 throw new SmartMealException(Error.ProductDoesntExist);
             }
+
+            if (product.ImagePath != null)
+            {
+
+            }
             var is_deleted = await _productRepository.RemoveElement(product);
             return is_deleted;
         }

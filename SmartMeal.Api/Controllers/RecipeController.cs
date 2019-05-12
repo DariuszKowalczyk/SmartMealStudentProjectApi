@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SmartMeal.Models.ModelsDto;
@@ -15,10 +17,14 @@ namespace SmartMeal.Api.Controllers
     public class RecipeController : ControllerBase
     {
         private readonly IRecipeService _recipeService;
+        private readonly IHostingEnvironment _environment;
+        private readonly string _imagePath;
 
-        public RecipeController(IRecipeService recipeService)
+        public RecipeController(IHostingEnvironment environment, IRecipeService recipeService)
         {
+            _environment = environment;
             _recipeService = recipeService;
+            _imagePath = _environment.ContentRootPath + "\\Images\\";
         }
 
         [Route("create")]
@@ -85,6 +91,33 @@ namespace SmartMeal.Api.Controllers
             return BadRequest();
         }
 
+        [HttpPost]
+        [Route("photo")]
+        public async Task<string> UploadRecipeImage([FromForm(Name = "file")] IFormFile file)
+        {
+            string newFilename;
 
+            if (file.Length > 0)
+            {
+                string imagePath;
+                do
+                {
+                    newFilename = Guid.NewGuid().ToString().Substring(0, 15) + Path.GetExtension(file.FileName);
+                    imagePath = _imagePath + newFilename;
+                } while (System.IO.File.Exists(imagePath));
+
+
+                using (var stream = new FileStream(imagePath, FileMode.Create))
+                {
+                    stream.Position = 0;
+
+                    await file.CopyToAsync(stream);
+                }
+
+                return newFilename;
+            }
+
+            return "Błąd!";
+        }
     }
 }

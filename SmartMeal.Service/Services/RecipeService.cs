@@ -51,6 +51,7 @@ namespace SmartMeal.Service.Services
 
         public async Task<Recipe> GetRecipeById(long id)
         {
+
             var recipe = await _recipeRepository.GetByAsync(x => x.Id == id);
             if (recipe != null)
             {

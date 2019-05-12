@@ -66,6 +66,7 @@ namespace SmartMeal.Api
             services.AddScoped<DbContext, AppDbContext>();
             services.AddScoped<IFacebookService, FacebookService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IRecipeService, RecipeService>();
             //Add repository
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
