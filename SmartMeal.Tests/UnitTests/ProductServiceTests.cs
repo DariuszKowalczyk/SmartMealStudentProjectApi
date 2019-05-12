@@ -26,7 +26,7 @@ namespace SmartMeal.Tests.UnitTests
         {
 
         }
-        [Fact]
+       
         public async void should_create_new_product()
         {
             var product = new ProductDto()
