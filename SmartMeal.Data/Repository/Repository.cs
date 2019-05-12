@@ -19,11 +19,24 @@ namespace SmartMeal.Data.Repository
             _dbContext = context;
             _dbSet = context.Set<T>();
         }
+
+        public async Task<bool> RemoveElement(T entity)
+        {
+            _dbSet.Remove(entity);
+            return await SaveAsync();
+
+        }
+
         public async Task<bool> CreateAsync(T entity)
         {
             await _dbSet.AddAsync(entity);
             return await SaveAsync();
             
+        }
+
+        public async Task<List<T>> GetAllAsync()
+        {
+            return await _dbContext.Set<T>().ToListAsync();
         }
 
         public async Task<T> GetByAsync(Expression<Func<T, bool>> expression)

@@ -15,27 +15,30 @@ namespace SmartMeal.Data.Migrations
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
+
+
+
             modelBuilder
-                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
-                .HasAnnotation("ProductVersion", "2.2.3-servicing-35854")
-                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+               .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
+               .HasAnnotation("ProductVersion", "2.2.3-servicing-35854")
+               .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("SmartMeal.Models.Models.User", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Email")
-                        .IsRequired();
+                b.Property<string>("Email")
+                    .IsRequired();
 
-                    b.Property<long>("FacebookId");
+                b.Property<long>("FacebookId");
 
-                    b.Property<string>("Password");
+                b.Property<string>("Password");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("User");
-                });
+                b.ToTable("User");
+            });
 #pragma warning restore 612, 618
         }
     }

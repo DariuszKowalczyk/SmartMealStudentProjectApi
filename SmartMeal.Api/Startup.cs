@@ -4,11 +4,13 @@ using FluentAssertions.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebSockets.Internal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using SmartMeal.Data.Data;
 using SmartMeal.Data.Repository;
@@ -53,18 +55,17 @@ namespace SmartMeal.Api
             string connectionString = GetConnectionString();
             services.AddDbContext<AppDbContext>(options => options.UseNpgsql(
                 connectionString, b => b.MigrationsAssembly("SmartMeal.Data")));
-
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "Smart Meal", Version = "v1" });
             });
-
+            services.AddCors();
             // Add services
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<DbContext, AppDbContext>();
             services.AddScoped<IFacebookService, FacebookService>();
-
+            services.AddScoped<IProductService, ProductService>();
             //Add repository
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
@@ -91,6 +92,14 @@ namespace SmartMeal.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseCors(builder =>builder.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod());
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "ProductImages")),
+                RequestPath = "/static/images"
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
