@@ -47,7 +47,7 @@ namespace SmartMeal.Service.Services
                 throw new SmartMealException(Error.ProductDoesntExist);
             }
             var is_deleted = await _productRepository.RemoveElement(product);
-            return true;
+            return is_deleted;
         }
 
         public async Task<Product> GetProductById(long id)
