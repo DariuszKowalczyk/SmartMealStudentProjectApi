@@ -119,7 +119,7 @@ namespace SmartMeal.Api.Controllers
             {
                 return BadRequest(response.Errors);
             }
-            return Ok(response);
+            return Ok(response.Data);
         }
 
 
