@@ -5,11 +5,10 @@ using System.Text;
 
 namespace SmartMeal.Models.ModelsDto
 {
-    public class ProductDto
+    public class ProductDto : DtoBaseModel
     {
-        [Required]
         public string Name { get; set; }
-        [Required]
+
         public string Description { get; set; }
 
         public int? Id { get; set; }

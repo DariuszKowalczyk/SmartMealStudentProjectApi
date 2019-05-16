@@ -10,5 +10,7 @@ namespace SmartMeal.Models
         public const string RegisterDtoIsNotValid = "Data is not valid.";
         public const string ProductExist = "The product already exists.";
         public const string ProductDoesntExist = "The product doesn't exist.";
+        public const string RecipeExist = "The recipe already exists.";
+        public const string RecipeDoesntExist = "The recipe doesn't exist";
     }
 }

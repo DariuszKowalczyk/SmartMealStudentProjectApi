@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using SmartMeal.Data.Repository.Interfaces;
+﻿using SmartMeal.Data.Repository.Interfaces;
 using SmartMeal.Models;
 using SmartMeal.Models.Models;
 using SmartMeal.Models.ModelsDto;
 using SmartMeal.Service.Interfaces;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using AutoMapper;
+using SmartMeal.Models.BindingModels;
 
 namespace SmartMeal.Service.Services
 {
@@ -21,56 +19,119 @@ namespace SmartMeal.Service.Services
             _productRepository = productRepository;
         }
 
-        public async Task<bool> CreateProductAsync(ProductDto product)
+        public async Task<Response<ProductDto>> CreateProductAsync(ProductBindingModel model)
         {
-            var productExist = await _productRepository.AnyExist(x => x.Name == product.Name);
+            var response = new Response<ProductDto>();
+
+            var productExist = await _productRepository.AnyExist(x => x.Name == model.Name);
             if (productExist)
             {
-                throw new SmartMealException(Error.ProductExist);
+                response.AddError(Error.ProductExist);
+                return response;
             }
-            var newProduct = new Product()
-            {
-                Name = product.Name,
-                Description = product.Description,
-                ImagePath = product.ImagePath,
-            };
 
-            var is_created = await _productRepository.CreateAsync(newProduct);
-            return is_created;
+            var product = Mapper.Map<Product>(model);
+
+            bool isCreated = await _productRepository.CreateAsync(product);
+
+            if (isCreated)
+            {   
+                var productDto = Mapper.Map<ProductDto>(product);
+                response.Data = productDto;
+                return response;
+            }
+
+            return response;
         }
 
-        public async Task<bool> DeleteProductAsync(long id)
+        public async Task<Response<DtoBaseModel>> DeleteProductAsync(long id)
         {
+            Response<DtoBaseModel> response = new Response<DtoBaseModel>();
+
+            var product = await _productRepository.GetByAsync(x => x.Id == id);
+            if(product == null)
+            {
+                response.AddError(Error.ProductDoesntExist);
+                return response;
+            }          
+
+            if (product.ImagePath != null)
+            {
+
+            }
+
+            var is_deleted = await _productRepository.RemoveElement(product);
+
+            if (!is_deleted)
+            {
+                response.AddError("błąd usuwania");
+            }
+
+            return response;
+        }
+
+        public async Task<Response<ProductDto>> GetProductById(long id)
+        {
+            Response<ProductDto> response = new Response<ProductDto>();
             var product = await _productRepository.GetByAsync(x => x.Id == id);
             if (product == null)
             {
-                throw new SmartMealException(Error.ProductDoesntExist);
+                response.AddError(Error.ProductDoesntExist);
+                return response;
             }
-            var is_deleted = await _productRepository.RemoveElement(product);
-            return true;
-        }
 
-        public async Task<Product> GetProductById(long id)
-        {
-            var product = await _productRepository.GetByAsync(x => x.Id == id);
-            product.ImagePath = $"/static/images/{product.ImagePath}";
-            if (product != null)
+            var productDto = Mapper.Map<ProductDto>(product);
+            if(productDto.ImagePath != "")
             {
-                return product;
+                productDto.ImagePath = $"/static/images/{productDto.ImagePath}";
             }
-            return null;
+
+            response.Data = productDto;
+            return response;
         }
 
-        public async Task<List<Product>> GetProducts()
+        public async Task<Responses<ProductDto>> GetProducts()
         {
+            var response = new Responses<ProductDto>();
             var products = await _productRepository.GetAllAsync();
-            if(products != null)
+
+            List<ProductDto> productsDto = new List<ProductDto>();
+            foreach (var product in products)
             {
-                return products;
+                productsDto.Add(Mapper.Map<ProductDto>(product));
             }
-            return null;
+            response.Data = productsDto;
+
+            return response;
         }
 
+        public async Task<Response<ProductDto>> UpdateProductAsync(ProductBindingModel model, long id)
+        {
+            var response = new Response<ProductDto>();
 
+            var product = await _productRepository.GetByAsync(x => x.Id == id);
+            if (product == null)
+            {
+                response.AddError(Error.ProductDoesntExist);
+                return response;
+            }
+
+            var newProduct = Mapper.Map<Product>(model);
+            newProduct.Id = id;
+
+            bool isUpdated = await _productRepository.UpdateAsync(newProduct);
+
+            if (!isUpdated)
+            {
+                response.AddError("Wystąpił błąd podczas aktualizowania!");
+                return response;
+            }
+
+            var productDto = Mapper.Map<ProductDto>(newProduct);
+            response.Data = productDto;
+
+            return response;
+
+        }
     }
 }

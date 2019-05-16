@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
 
@@ -12,5 +13,7 @@ namespace SmartMeal.Models.Models
         public string Description { get; set; }
 
         public string ImagePath { get; set; }
+
+        public ICollection<Ingredient> Ingredients { get; set; }
     }
 }
