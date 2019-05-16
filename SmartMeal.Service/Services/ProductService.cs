@@ -19,6 +19,21 @@ namespace SmartMeal.Service.Services
             _productRepository = productRepository;
         }
 
+        public async Task<Responses<ProductDto>> GetProducts()
+        {
+            var response = new Responses<ProductDto>();
+            var products = await _productRepository.GetAllAsync();
+
+            List<ProductDto> productsDto = new List<ProductDto>();
+            foreach (var product in products)
+            {
+                productsDto.Add(Mapper.Map<ProductDto>(product));
+            }
+            response.Data = productsDto;
+
+            return response;
+        }
+
         public async Task<Response<ProductDto>> CreateProductAsync(ProductBindingModel model)
         {
             var response = new Response<ProductDto>();
@@ -44,32 +59,6 @@ namespace SmartMeal.Service.Services
             return response;
         }
 
-        public async Task<Response<DtoBaseModel>> DeleteProductAsync(long id)
-        {
-            Response<DtoBaseModel> response = new Response<DtoBaseModel>();
-
-            var product = await _productRepository.GetByAsync(x => x.Id == id);
-            if(product == null)
-            {
-                response.AddError(Error.ProductDoesntExist);
-                return response;
-            }          
-
-            if (product.ImagePath != null)
-            {
-
-            }
-
-            var is_deleted = await _productRepository.RemoveElement(product);
-
-            if (!is_deleted)
-            {
-                response.AddError("błąd usuwania");
-            }
-
-            return response;
-        }
-
         public async Task<Response<ProductDto>> GetProductById(long id)
         {
             Response<ProductDto> response = new Response<ProductDto>();
@@ -81,27 +70,12 @@ namespace SmartMeal.Service.Services
             }
 
             var productDto = Mapper.Map<ProductDto>(product);
-            if(productDto.ImagePath != "")
+            if (productDto.ImagePath != "")
             {
                 productDto.ImagePath = $"/static/images/{productDto.ImagePath}";
             }
 
             response.Data = productDto;
-            return response;
-        }
-
-        public async Task<Responses<ProductDto>> GetProducts()
-        {
-            var response = new Responses<ProductDto>();
-            var products = await _productRepository.GetAllAsync();
-
-            List<ProductDto> productsDto = new List<ProductDto>();
-            foreach (var product in products)
-            {
-                productsDto.Add(Mapper.Map<ProductDto>(product));
-            }
-            response.Data = productsDto;
-
             return response;
         }
 
@@ -132,6 +106,32 @@ namespace SmartMeal.Service.Services
 
             return response;
 
+        }
+
+        public async Task<Response<DtoBaseModel>> DeleteProductAsync(long id)
+        {
+            Response<DtoBaseModel> response = new Response<DtoBaseModel>();
+
+            var product = await _productRepository.GetByAsync(x => x.Id == id);
+            if (product == null)
+            {
+                response.AddError(Error.ProductDoesntExist);
+                return response;
+            }
+
+            if (product.ImagePath != null)
+            {
+
+            }
+
+            var is_deleted = await _productRepository.RemoveElement(product);
+
+            if (!is_deleted)
+            {
+                response.AddError("błąd usuwania");
+            }
+
+            return response;
         }
     }
 }

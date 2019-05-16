@@ -58,6 +58,30 @@ namespace SmartMeal.Api.Controllers
 
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetSingleProduct(long id)
+        {
+            var response = await _productService.GetProductById(id);
+
+            if (!response.IsError)
+            {
+                return Ok(response.Data);
+            }
+            return BadRequest(response.Errors);
+
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdateProduct(int id, [FromBody] ProductBindingModel model)
+        {
+            var response = await _productService.UpdateProductAsync(model, id);
+            if (response.IsError)
+            {
+                return BadRequest(response.Errors);
+            }
+            return Ok(response.Data);
+        }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(long id)
@@ -98,30 +122,9 @@ namespace SmartMeal.Api.Controllers
             return null;
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetSingleProduct(long id)
-        {
-            var response = await _productService.GetProductById(id);
+       
 
-            if (!response.IsError)
-            {
-                return Ok(response.Data);
-            }
-            return BadRequest(response.Errors);
-            
-        }
-
-        [HttpPatch("{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, [FromBody] ProductBindingModel model)
-        {
-            var response = await _productService.UpdateProductAsync(model, id);
-            if (response.IsError)
-            {
-                return BadRequest(response.Errors);
-            }
-            return Ok(response.Data);
-        }
-
+        
 
     }
 }

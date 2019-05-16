@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SmartMeal.Models.BindingModels;
 using SmartMeal.Models.ModelsDto;
 using SmartMeal.Service.Interfaces;
 
@@ -27,70 +28,77 @@ namespace SmartMeal.Api.Controllers
             _imagePath = _environment.ContentRootPath + "\\Images\\";
         }
 
-        [Route("create")]
+        [HttpGet]
+        public async Task<IActionResult> GetRecipes()
+        {
+            var response = await _recipeService.GetRecipes();
+            if (response.IsError)
+            {
+                return BadRequest(response.Errors);
+            }
+
+            return Ok(response.Data);
+        }
+
+
         [HttpPost]
-        public async Task<IActionResult> CreateRecipe([FromBody] RecipeDto model)
+        public async Task<IActionResult> CreateRecipe([FromBody] RecipeBindingModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-            var result = await _recipeService.CreateProductAsync(model);
-            if (result)
+
+            var response = await _recipeService.CreateRecipeAsync(model);
+            if (response.IsError)
             {
-                return Ok();
-            }
-            else
-            {
-                return Conflict(ModelState);
+                return BadRequest(response.Errors);
             }
 
+            return Ok(response.Data);
         }
 
-        [HttpDelete]
-        [Route("delete")]
-        public async Task<IActionResult> DeleteRecipe(long id)
-        {
-            var result = await _recipeService.DeleteRecipeAsync(id);
-            if (result)
-            {
-                return Ok();
-            }
-            else
-            {
-                return BadRequest();
-            }
-
-        }
-
-        [HttpGet]
-        [Route("get{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetSingleRecipe(long id)
         {
-            var result = await _recipeService.GetRecipeById(id);
+            var response = await _recipeService.GetRecipeById(id);
 
-            if (result != null)
+            if (!response.IsError)
             {
-                return Ok(result);
+                return Ok(response.Data);
             }
 
-            return BadRequest();
+            return BadRequest(response.Data);
         }
 
-        [HttpGet]
-        [Route("get")]
-        public async Task<IActionResult> GetRecipes()
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdateRecipe(int id, [FromBody] RecipeBindingModel model)
         {
-            var result = await _recipeService.GetRecipies();
-
-            if (result != null)
+            var response = await _recipeService.UpdateRecipeAsync(model, id);
+            if (response.IsError)
             {
-                return Ok(result);
+                return BadRequest(response.Errors);
             }
-
-            return BadRequest();
+            return Ok(response.Data);
         }
 
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteRecipe(long id)
+        {
+            var response = await _recipeService.DeleteRecipeAsync(id);
+            if (!response.IsError)
+            {
+                return Ok();
+            }
+            return BadRequest(response.Errors);
+
+        }
+
+       
+
+        
         [HttpPost]
         [Route("photo")]
         public async Task<string> UploadRecipeImage([FromForm(Name = "file")] IFormFile file)

@@ -62,12 +62,13 @@ namespace SmartMeal.Api
             Mapper.Initialize(cfg => cfg.AddProfile<MapperProfile>());
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             // Add services
+            services.AddScoped<IIgredientService, IgredientService>();
             services.AddScoped<IAccountService, AccountService>();
-            services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<DbContext, AppDbContext>();
             services.AddScoped<IFacebookService, FacebookService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IRecipeService, RecipeService>();
+            services.AddScoped<IAuthService, AuthService>();
             //Add repository
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 

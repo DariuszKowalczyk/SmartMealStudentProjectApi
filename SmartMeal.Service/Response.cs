@@ -41,6 +41,10 @@ namespace SmartMeal.Service
             Data = new List<T>();
         }
 
+        public void AddError(string error)
+        {
+            Errors.Add(error);
+        }
 
 
     }

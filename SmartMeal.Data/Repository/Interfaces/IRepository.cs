@@ -15,5 +15,7 @@ namespace SmartMeal.Data.Repository.Interfaces
         Task<bool> RemoveElement(T entity);
         Task<List<T>> GetAllAsync();
         Task<bool> UpdateAsync(T entity);
+        Task<bool> CreateRangeAsync(IEnumerable<T> entities);
+
     }
 }

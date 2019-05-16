@@ -46,6 +46,12 @@ namespace SmartMeal.Data.Repository
             return await SaveAsync();
         }
 
+        public async Task<bool> CreateRangeAsync(IEnumerable<T> entities)
+        {
+            await _dbSet.AddRangeAsync(entities);
+            return await SaveAsync();
+        }
+
         public async Task<T> GetByAsync(Expression<Func<T, bool>> expression, bool withTracking = false)
         {
             IQueryable<T> query = _dbSet;

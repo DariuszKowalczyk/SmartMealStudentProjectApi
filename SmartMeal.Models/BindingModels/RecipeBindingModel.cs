@@ -2,20 +2,18 @@
 using System.Collections.Generic;
 using System.Text;
 using SmartMeal.Models.Models;
+using SmartMeal.Models.ModelsDto;
 
-namespace SmartMeal.Models.ModelsDto
+namespace SmartMeal.Models.BindingModels
 {
-    public class RecipeDto : DtoBaseModel
+    public class RecipeBindingModel
     {
-        public long Id { get; set; }
-
         public string Name { get; set; }
 
         public string Description { get; set; }
 
         public string ImagePath { get; set; }
 
-        public List<IngredientDto> Ingredients { get; set; }
-
+        public List<IngredientBindingModel> Ingredients { get; set; } = new List<IngredientBindingModel>();
     }
 }
