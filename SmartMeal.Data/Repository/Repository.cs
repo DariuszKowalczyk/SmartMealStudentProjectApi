@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,9 +40,20 @@ namespace SmartMeal.Data.Repository
             return await _dbContext.Set<T>().ToListAsync();
         }
 
-        public async Task<T> GetByAsync(Expression<Func<T, bool>> expression)
+        public async Task<bool> UpdateAsync(T entity)
         {
-            return await _dbSet.FirstOrDefaultAsync(expression);
+            _dbSet.Update(entity);
+            return await SaveAsync();
+        }
+
+        public async Task<T> GetByAsync(Expression<Func<T, bool>> expression, bool withTracking = false)
+        {
+            IQueryable<T> query = _dbSet;
+            if (!withTracking)
+            {
+                query = query.AsNoTracking();
+            }
+            return await query.FirstOrDefaultAsync(expression);
         }
 
         public async Task<bool> AnyExist(Expression<Func<T, bool>> expression)

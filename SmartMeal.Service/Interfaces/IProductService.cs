@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using SmartMeal.Models.BindingModels;
 using SmartMeal.Models.Models;
 using SmartMeal.Models.ModelsDto;
 
@@ -9,10 +10,11 @@ namespace SmartMeal.Service.Interfaces
 {
     public interface IProductService
     {
-        Task<bool> CreateProductAsync(ProductDto product);
-        Task<bool> DeleteProductAsync(long id);
-        Task<Product> GetProductById(long id);
-        Task<List<Product>> GetProducts();
+        Task<Response<ProductDto>> CreateProductAsync(ProductBindingModel model);
+        Task<Response<DtoBaseModel>> DeleteProductAsync(long id);
+        Task<Response<ProductDto>> GetProductById(long id);
+        Task<Responses<ProductDto>> GetProducts();
+        Task<Response<ProductDto>> UpdateProductAsync(ProductBindingModel model, long id);
 
     }
 }

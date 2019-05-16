@@ -22,6 +22,7 @@ namespace SmartMeal.Tests.UnitTests
     {
         private Mock<IRepository<Product>> _productRepository { get; set; }
 
+
        public ProductServiceTests()
         {
 
@@ -43,6 +44,7 @@ namespace SmartMeal.Tests.UnitTests
             Assert.True(response);
         }
 
+        [Fact]
         public async void should_create_new_product_with_photo()
         {
             var product = new ProductDto()
@@ -59,7 +61,8 @@ namespace SmartMeal.Tests.UnitTests
             Assert.True(response);
         }
 
-        public async void given_product_name_already_exist()
+        [Fact]
+        public async void should_create_given_product_name_already_exist()
         {
             var product = new ProductDto()
             {
@@ -67,12 +70,29 @@ namespace SmartMeal.Tests.UnitTests
                 Description = "DescTest"
             };
             _productRepository = new Mock<IRepository<Product>>();
-            _productRepository.Setup(x => x.AnyExist(It.IsAny<Expression<Func<Product, bool>>>())).Returns(Task.FromResult(false));
+            _productRepository.Setup(x => x.AnyExist(It.IsAny<Expression<Func<Product, bool>>>())).Returns(Task.FromResult(true));
             var productService = new ProductService(_productRepository.Object);
 
             await Assert.ThrowsAsync<SmartMealException>(() => productService.CreateProductAsync(product));
         }
 
+        [Fact]
+        public async void should_delete_given_product_not_found()
+        {
+            var product = new Product()
+            {
+                Id = 1,
+                Name = "test",
+                Description = "DescTest"
+            };
+            _productRepository = new Mock<IRepository<Product>>();
+            _productRepository.Setup(x => x.RemoveElement(It.IsAny<Product>())).Returns(Task.FromResult(false));
+            var productService = new ProductService(_productRepository.Object);
+
+            var result = await productService.DeleteProductAsync(product.Id);
+
+            Assert.True(result);
+        }
          
     }
 }

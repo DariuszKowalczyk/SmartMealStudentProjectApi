@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
-using SmartMeal.Models.Models;
 
-namespace SmartMeal.Models.ModelsDto
+namespace SmartMeal.Models.BindingModels
 {
-    public class RecipeDto
+    public class ProductBindingModel
     {
+        [Required]
         public string Name { get; set; }
+
+        [Required]
         public string Description { get; set; }
 
         public string ImagePath { get; set; }
-
-//        public IEnumerable<IngredientDto> Ingredients { get; set; }
-
     }
 }

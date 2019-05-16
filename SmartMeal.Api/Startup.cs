@@ -1,12 +1,8 @@
-﻿using System.IO;
-using System.Text;
-using FluentAssertions.AspNetCore.Mvc;
+﻿using System;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebSockets.Internal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,10 +11,13 @@ using Microsoft.IdentityModel.Tokens;
 using SmartMeal.Data.Data;
 using SmartMeal.Data.Repository;
 using SmartMeal.Data.Repository.Interfaces;
-using SmartMeal.Models.Models;
+using SmartMeal.Service;
 using SmartMeal.Service.Interfaces;
 using SmartMeal.Service.Services;
 using Swashbuckle.AspNetCore.Swagger;
+using System.IO;
+using System.Text;
+using AutoMapper;
 
 namespace SmartMeal.Api
 {
@@ -60,6 +59,8 @@ namespace SmartMeal.Api
                 c.SwaggerDoc("v1", new Info { Title = "Smart Meal", Version = "v1" });
             });
             services.AddCors();
+            Mapper.Initialize(cfg => cfg.AddProfile<MapperProfile>());
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             // Add services
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IAuthService, AuthService>();

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SmartMeal.Models.BindingModels;
 using SmartMeal.Models.ModelsDto;
 using SmartMeal.Service.Interfaces;
 
@@ -28,40 +29,48 @@ namespace SmartMeal.Api.Controllers
             _imagePath = _environment.ContentRootPath + "\\Images\\";
         }
 
-        [Route("create")]
+        [HttpGet]
+        public async Task<IActionResult> GetProducts()
+        {
+            var response = await _productService.GetProducts();
+            if (response.IsError)
+            {
+                return BadRequest(response.Errors);
+            }
+
+            return Ok(response.Data);
+        }
+
         [HttpPost]
-        public async Task<IActionResult> CreateProduct([FromBody] ProductDto model)
+        public async Task<IActionResult> CreateProduct([FromBody] ProductBindingModel model)
         {
             
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-            var result = await _productService.CreateProductAsync(model);
-            if (result)
+            var response = await _productService.CreateProductAsync(model);
+            if (response.IsError)
+            {
+                return BadRequest(response.Errors);
+            }
+            return Ok(response.Data);
+
+        }
+
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProduct(long id)
+        {
+            var response = await _productService.DeleteProductAsync(id);
+            if (!response.IsError)
             {
                 return Ok();
             }
-            else
-            {
-                return Conflict(ModelState);
-            }
-
-        }
-        [HttpDelete]
-        [Route("delete")]
-        public async Task<IActionResult> DeleteProduct(long id)
-        {
-            var result = await _productService.DeleteProductAsync(id);
-            if (result)
-            {
-                return Ok();    
-            }
-            return BadRequest();
+            return BadRequest(response.Errors);
         }
 
-        [HttpPost]
-        [Route("photo")]
+        [HttpPost("photo")]
         public async Task<string> UploadProductImage([FromForm(Name = "file")] IFormFile file)
         {
             string newFilename;
@@ -86,34 +95,31 @@ namespace SmartMeal.Api.Controllers
                 return newFilename;
             }
 
-            return "Błąd!";
+            return null;
         }
 
-        [HttpGet]
-        [Route("get{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetSingleProduct(long id)
         {
-            var result = await _productService.GetProductById(id);
+            var response = await _productService.GetProductById(id);
 
-            if (result != null)
+            if (!response.IsError)
             {
-                return Ok(result);
+                return Ok(response.Data);
             }
-            return BadRequest();
+            return BadRequest(response.Errors);
             
         }
 
-        [HttpGet]
-        [Route("get")]
-        public async Task<IActionResult> GetProducts()
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdateProduct(int id, [FromBody] ProductBindingModel model)
         {
-            var result = await _productService.GetProducts();
-
-            if (result != null)
+            var response = await _productService.UpdateProductAsync(model, id);
+            if (response.IsError)
             {
-                return Ok(result);
+                return BadRequest(response.Errors);
             }
-            return BadRequest();
+            return Ok(response);
         }
 
 
