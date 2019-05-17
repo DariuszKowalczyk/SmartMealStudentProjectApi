@@ -20,7 +20,6 @@ namespace SmartMeal.Data.Data
             modelBuilder.Entity<Product>().ToTable("Product");
             modelBuilder.Entity<Ingredient>().ToTable("Ingredient");
             modelBuilder.Entity<Recipe>().ToTable("Recipe");
-
             modelBuilder.Entity<Ingredient>().HasOne(i => i.Recipe).WithMany(r => r.Ingredients);
             modelBuilder.Entity<Ingredient>().HasOne(i => i.Product).WithMany(p => p.Ingredients);
 

@@ -17,6 +17,7 @@ namespace SmartMeal.Service.Interfaces
         Task<Response<RecipeDto>> GetRecipeById(long id);
 
         Task<Response<RecipeDto>> UpdateRecipeAsync(RecipeBindingModel model, long id);
+
         Task<Response<DtoBaseModel>> DeleteRecipeAsync(long id);
 
         

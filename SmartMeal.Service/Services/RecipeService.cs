@@ -34,10 +34,15 @@ namespace SmartMeal.Service.Services
             List<RecipeDto> recipesDto = new List<RecipeDto>();
             foreach (var recipe in recipes)
             {
-                recipesDto.Add(Mapper.Map<RecipeDto>(recipe));
+                var recipeDto = Mapper.Map<RecipeDto>(recipe);
+                var result = await _igredientService.GetIngredientsFromRecipe(recipeDto.Id);
+                var ingredientsDto = result.Data;
+                recipeDto.Ingredients = ingredientsDto;
+                recipesDto.Add(recipeDto);
             }
 
             response.Data = recipesDto;
+
 
             return response;
         }
@@ -76,7 +81,6 @@ namespace SmartMeal.Service.Services
 
             response.Data = recipeDto;
             return response;
-            
         }
 
         public async Task<Response<RecipeDto>> GetRecipeById(long id)
@@ -88,8 +92,17 @@ namespace SmartMeal.Service.Services
                 response.AddError(Error.RecipeDoesntExist);
                 return response;
             }
+            var result = await _igredientService.GetIngredientsFromRecipe(id);
+            if (result.IsError)
+            {
+                response.Errors = result.Errors;
+                return response;
+            }
 
+            var ingredientsDto = result.Data;
             var recipeDto = Mapper.Map<RecipeDto>(recipe);
+            recipeDto.Ingredients = ingredientsDto;
+
             if (recipeDto.ImagePath != "")
             {
                 recipeDto.ImagePath = $"/static/images/{recipeDto.ImagePath}";
@@ -121,13 +134,10 @@ namespace SmartMeal.Service.Services
                 return response;
             }
 
-
-
             var recipeDto = Mapper.Map<RecipeDto>(newRecipe);
             response.Data = recipeDto;
 
             return response;
-
         }
 
         public async Task<Response<DtoBaseModel>> DeleteRecipeAsync(long id)

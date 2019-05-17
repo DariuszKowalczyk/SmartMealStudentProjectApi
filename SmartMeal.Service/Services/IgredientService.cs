@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -39,7 +40,7 @@ namespace SmartMeal.Service.Services
             List<Ingredient> ingredients = new List<Ingredient>();
             foreach (var ingredientBind in ingredientBindingModels)
             {
-                var product = await _productRepository.GetByAsync(x => x.Id == ingredientBind.ProductId);
+                var product = await _productRepository.GetByAsync(x => x.Id == ingredientBind.ProductId, withTracking:true);
                 if (product == null)
                 {
                     response.AddError(Error.ProductDoesntExist);
@@ -68,6 +69,28 @@ namespace SmartMeal.Service.Services
             response.Data = ingredientDtos;
             return response;
 
+
+        }
+
+        public async Task<Responses<IngredientDto>> GetIngredientsFromRecipe(long recipeId)
+        {
+            var response = new Responses<IngredientDto>();
+            var recipe = await _recipeRepository.GetByAsync(x => x.Id == recipeId, includes: param => param.Ingredients);
+            if(recipe==null){
+                response.AddError(Error.RecipeDoesntExist);
+                return response;
+            }
+
+            var ingredients = recipe.Ingredients;
+            var ingredientsDto = new List<IngredientDto>();
+            foreach (var ingrident in ingredients)
+            {
+                var ingredientDto = Mapper.Map<IngredientDto>(ingrident);
+                ingredientsDto.Add(ingredientDto);
+            }
+
+            response.Data = ingredientsDto;
+            return response;
 
         }
     }

@@ -11,5 +11,7 @@ namespace SmartMeal.Service.Interfaces
     {
         Task<Responses<IngredientDto>> CreateIngredientsToRecipe(long recipeId, List<IngredientBindingModel> ingredientBindingModels);
 
+        Task<Responses<IngredientDto>> GetIngredientsFromRecipe(long recipeId);
+
     }
 }
