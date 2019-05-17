@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Remotion.Linq.Clauses;
 using SmartMeal.Data.Repository.Interfaces;
 using SmartMeal.Models;
+using SmartMeal.Models.BindingModels;
 using SmartMeal.Models.Models;
 using SmartMeal.Models.ModelsDto;
 using SmartMeal.Service.Interfaces;
@@ -13,67 +17,153 @@ namespace SmartMeal.Service.Services
     public class RecipeService : IRecipeService
     {
         private readonly IRepository<Recipe> _recipeRepository;
+        private readonly IIgredientService _igredientService;
 
-        public RecipeService(IRepository<Recipe> recipeRepository)
+        public RecipeService(IRepository<Recipe> recipeRepository, IIgredientService inIgredientService)
         {
             _recipeRepository = recipeRepository;
+            _igredientService = inIgredientService;
         }
 
-        public async Task<bool> CreateProductAsync(RecipeDto recipe)
+
+        public async Task<Responses<RecipeDto>> GetRecipes()
         {
-            var recipeExist = await _recipeRepository.AnyExist(x => x.Name == recipe.Name);
+            var response = new Responses<RecipeDto>();
+            var recipes = await _recipeRepository.GetAllAsync();
+
+            List<RecipeDto> recipesDto = new List<RecipeDto>();
+            foreach (var recipe in recipes)
+            {
+                var recipeDto = Mapper.Map<RecipeDto>(recipe);
+                var result = await _igredientService.GetIngredientsFromRecipe(recipeDto.Id);
+                var ingredientsDto = result.Data;
+                recipeDto.Ingredients = ingredientsDto;
+                recipesDto.Add(recipeDto);
+            }
+
+            response.Data = recipesDto;
+
+
+            return response;
+        }
+
+        public async Task<Response<RecipeDto>> CreateRecipeAsync(RecipeBindingModel model)
+        {
+            var response = new Response<RecipeDto>();
+
+            var recipeExist = await _recipeRepository.AnyExist(x => x.Name == model.Name);
             if (recipeExist)
             {
-                throw new SmartMealException(Error.RecipeExist);
-            }
-            var newRecipe = new Recipe()
-            {
-                Name = recipe.Name,
-                Description = recipe.Description
-            };
-
-            var is_created = await _recipeRepository.CreateAsync(newRecipe);
-
-            return is_created;
-        }
-
-        public async Task<bool> DeleteRecipeAsync(long id)
-        {
-            var product = await _recipeRepository.GetByAsync(x => x.Id == id);
-            if (product == null)
-            {
-                throw new SmartMealException(Error.ProductDoesntExist);
+                response.AddError(Error.RecipeExist);
+                return response;
             }
 
-            var is_deleted = await _recipeRepository.RemoveElement(product);
-            return is_deleted;
+            var recipe = Mapper.Map<Recipe>(model);
+
+            bool isCreated = await _recipeRepository.CreateAsync(recipe);
+
+            if (!isCreated)
+            {
+                response.AddError("błąd Podczas tworzenia przepisu!");
+                return response;
+            }
+
+            // Dodawanie składników
+            var result = await _igredientService.CreateIngredientsToRecipe(recipe.Id, model.Ingredients);
+            if (result.IsError)
+            {
+                response.Errors = result.Errors;
+                return response;
+            }
+
+            var recipeDto = Mapper.Map<RecipeDto>(recipe);
+            recipeDto.Ingredients = result.Data;
+
+            response.Data = recipeDto;
+            return response;
         }
 
-        public async Task<Recipe> GetRecipeById(long id)
+        public async Task<Response<RecipeDto>> GetRecipeById(long id)
         {
+            var response = new Response<RecipeDto>();
+            var recipe = await _recipeRepository.GetByAsync(x => x.Id == id);
+            if (recipe == null)
+            {
+                response.AddError(Error.RecipeDoesntExist);
+                return response;
+            }
+            var result = await _igredientService.GetIngredientsFromRecipe(id);
+            if (result.IsError)
+            {
+                response.Errors = result.Errors;
+                return response;
+            }
+
+            var ingredientsDto = result.Data;
+            var recipeDto = Mapper.Map<RecipeDto>(recipe);
+            recipeDto.Ingredients = ingredientsDto;
+
+            if (recipeDto.ImagePath != "")
+            {
+                recipeDto.ImagePath = $"/static/images/{recipeDto.ImagePath}";
+            }
+
+            response.Data = recipeDto;
+            return response;
+        }
+
+        public async Task<Response<RecipeDto>> UpdateRecipeAsync(RecipeBindingModel model, long id)
+        {
+            var response = new Response<RecipeDto>();
 
             var recipe = await _recipeRepository.GetByAsync(x => x.Id == id);
-            if (recipe != null)
+            if (recipe == null)
             {
-                return recipe;
+                response.AddError(Error.RecipeDoesntExist);
+                return response;
             }
-            return null;
+
+            var newRecipe = Mapper.Map<Recipe>(model);
+            newRecipe.Id = id;
+
+            bool isUpdated = await _recipeRepository.UpdateAsync(newRecipe);
+
+            if (!isUpdated)
+            {
+                response.AddError("Wystąpił błąd podczas aktualizowania!");
+                return response;
+            }
+
+            var recipeDto = Mapper.Map<RecipeDto>(newRecipe);
+            response.Data = recipeDto;
+
+            return response;
         }
 
-
-        public async Task<List<Recipe>> GetRecipies()
+        public async Task<Response<DtoBaseModel>> DeleteRecipeAsync(long id)
         {
-            var recipes = await _recipeRepository.GetAllAsync();
-            if (recipes != null)
+            var response = new Response<DtoBaseModel>();
+
+            var recipe = await _recipeRepository.GetByAsync(x => x.Id == id);
+            if(recipe == null)
             {
-                return recipes;
+               response.AddError(Error.RecipeDoesntExist);
+               return response;
             }
 
-            return null;
+            if (recipe.ImagePath != null)
+            {
 
+            }
+
+            var isDeleted = await _recipeRepository.RemoveElement(recipe);
+
+            if (!isDeleted)
+            {
+                response.AddError("Błąd przy usuwaniu");
+            }
+
+            return response;
         }
-
-
-
     }
 }

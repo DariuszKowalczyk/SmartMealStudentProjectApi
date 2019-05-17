@@ -46,12 +46,22 @@ namespace SmartMeal.Data.Repository
             return await SaveAsync();
         }
 
-        public async Task<T> GetByAsync(Expression<Func<T, bool>> expression, bool withTracking = false)
+        public async Task<bool> CreateRangeAsync(IEnumerable<T> entities)
+        {
+            await _dbSet.AddRangeAsync(entities);
+            return await SaveAsync();
+        }
+
+        public async Task<T> GetByAsync(Expression<Func<T, bool>> expression, bool withTracking = false, params Expression<Func<T, object>>[] includes)
         {
             IQueryable<T> query = _dbSet;
             if (!withTracking)
             {
                 query = query.AsNoTracking();
+            }
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
             }
             return await query.FirstOrDefaultAsync(expression);
         }

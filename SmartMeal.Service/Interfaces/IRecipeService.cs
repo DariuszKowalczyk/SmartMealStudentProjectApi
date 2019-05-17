@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using SmartMeal.Models.BindingModels;
 using SmartMeal.Models.Models;
 using SmartMeal.Models.ModelsDto;
 
@@ -9,13 +10,17 @@ namespace SmartMeal.Service.Interfaces
 {
     public interface IRecipeService
     {
-        Task<List<Recipe>> GetRecipies();
+        Task<Responses<RecipeDto>> GetRecipes();
 
-        Task<bool> CreateProductAsync(RecipeDto recipe);
+        Task<Response<RecipeDto>> CreateRecipeAsync(RecipeBindingModel model);
 
-        Task<bool> DeleteRecipeAsync(long id);
+        Task<Response<RecipeDto>> GetRecipeById(long id);
 
-        Task<Recipe> GetRecipeById(long id);
+        Task<Response<RecipeDto>> UpdateRecipeAsync(RecipeBindingModel model, long id);
+
+        Task<Response<DtoBaseModel>> DeleteRecipeAsync(long id);
+
+        
 
     }
 }

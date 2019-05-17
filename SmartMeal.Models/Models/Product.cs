@@ -14,6 +14,6 @@ namespace SmartMeal.Models.Models
 
         public string ImagePath { get; set; }
 
-        public ICollection<Ingredient> Ingredients { get; set; }
+        public virtual ICollection<Ingredient> Ingredients { get; set; }
     }
 }

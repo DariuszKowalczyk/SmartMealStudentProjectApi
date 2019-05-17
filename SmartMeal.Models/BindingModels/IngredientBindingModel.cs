@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SmartMeal.Models.ModelsDto
+namespace SmartMeal.Models.BindingModels
 {
-    public class IngredientDto : DtoBaseModel
+    public class IngredientBindingModel
     {
-        public int Id { get; set; }
-        public string Product { get; set; }
+        public long ProductId { get; set; }
 
         public float Amount { get; set; }
 
         public string Metric { get; set; }
-
     }
 }
