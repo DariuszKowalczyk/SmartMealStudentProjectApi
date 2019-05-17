@@ -10,7 +10,7 @@ using SmartMeal.Data.Data;
 namespace SmartMeal.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20190517094737_Ingredient")]
+    [Migration("20190517142346_Ingredient")]
     partial class Ingredient
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,7 +28,7 @@ namespace SmartMeal.Data.Migrations
 
                     b.Property<float>("Amount");
 
-                    b.Property<string>("Metric");
+                    b.Property<int>("Metric");
 
                     b.Property<long?>("ProductId");
 

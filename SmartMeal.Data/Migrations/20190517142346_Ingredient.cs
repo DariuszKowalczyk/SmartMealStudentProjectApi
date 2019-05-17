@@ -12,10 +12,11 @@ namespace SmartMeal.Data.Migrations
                 nullable: false,
                 defaultValue: 0f);
 
-            migrationBuilder.AddColumn<string>(
+            migrationBuilder.AddColumn<int>(
                 name: "Metric",
                 table: "Ingredient",
-                nullable: true);
+                nullable: false,
+                defaultValue: 0);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

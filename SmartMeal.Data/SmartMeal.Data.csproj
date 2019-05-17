@@ -7,6 +7,12 @@
   <ItemGroup>
     <Compile Remove="Migrations\20190503145819_Facebook.cs" />
     <Compile Remove="Migrations\20190503145819_Facebook.Designer.cs" />
+    <Compile Remove="Migrations\20190517094737_Ingredient.cs" />
+    <Compile Remove="Migrations\20190517094737_Ingredient.Designer.cs" />
+    <Compile Remove="Migrations\20190517133936_Metrics.cs" />
+    <Compile Remove="Migrations\20190517133936_Metrics.Designer.cs" />
+    <Compile Remove="Migrations\20190517134249_Metrics.cs" />
+    <Compile Remove="Migrations\20190517134249_Metrics.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

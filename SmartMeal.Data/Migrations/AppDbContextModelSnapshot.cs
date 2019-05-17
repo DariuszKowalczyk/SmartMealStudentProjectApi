@@ -26,7 +26,7 @@ namespace SmartMeal.Data.Migrations
 
                     b.Property<float>("Amount");
 
-                    b.Property<string>("Metric");
+                    b.Property<int>("Metric");
 
                     b.Property<long?>("ProductId");
 
