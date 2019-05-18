@@ -61,7 +61,9 @@ namespace SmartMeal.Api
             services.AddCors();
             Mapper.Initialize(cfg => cfg.AddProfile<MapperProfile>());
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             // Add services
+            services.AddScoped<ITimetableService, TimetableService>();
             services.AddScoped<IIgredientService, IgredientService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<DbContext, AppDbContext>();
@@ -69,6 +71,7 @@ namespace SmartMeal.Api
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IRecipeService, RecipeService>();
             services.AddScoped<IAuthService, AuthService>();
+
             //Add repository
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
