@@ -19,14 +19,11 @@ namespace SmartMeal.Api.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
-        private readonly IHostingEnvironment _environment;
         private readonly string _imagePath;
 
-        public ProductController(IHostingEnvironment environment, IProductService productService)
+        public ProductController(IProductService productService)
         {
-            _environment = environment;
             _productService = productService;
-            _imagePath = _environment.ContentRootPath + "\\Images\\";
         }
 
         [HttpGet]
