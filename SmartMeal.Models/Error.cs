@@ -12,5 +12,6 @@ namespace SmartMeal.Models
         public const string ProductDoesntExist = "The product doesn't exist.";
         public const string RecipeExist = "The recipe already exists.";
         public const string RecipeDoesntExist = "The recipe doesn't exist";
+        public const string TimetableDoesntExist = "The timmetable doesn't exist";
     }
 }

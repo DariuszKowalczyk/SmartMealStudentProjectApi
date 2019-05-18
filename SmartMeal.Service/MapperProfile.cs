@@ -34,6 +34,11 @@ namespace SmartMeal.Service
                 .ForMember(dest => dest.Recipe, opt => opt.Ignore());
             CreateMap<Ingredient, IngredientDto>()
                 .ForMember(dest => dest.Product, opt => opt.MapFrom(i => i.Product.Name));
+
+            // Timetable
+            CreateMap<TimetableBindingModel, Timetable>()
+                .ForMember(dest => dest.Recipe, opt => opt.Ignore());
+            CreateMap<Timetable, TimetableDto>();
         }
 
     }

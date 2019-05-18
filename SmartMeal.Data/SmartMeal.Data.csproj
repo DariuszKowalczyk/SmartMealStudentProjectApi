@@ -13,6 +13,12 @@
     <Compile Remove="Migrations\20190517133936_Metrics.Designer.cs" />
     <Compile Remove="Migrations\20190517134249_Metrics.cs" />
     <Compile Remove="Migrations\20190517134249_Metrics.Designer.cs" />
+    <Compile Remove="Migrations\20190518120935_Timetable.cs" />
+    <Compile Remove="Migrations\20190518120935_Timetable.Designer.cs" />
+    <Compile Remove="Migrations\20190518141909_Timetable.cs" />
+    <Compile Remove="Migrations\20190518141909_Timetable.Designer.cs" />
+    <Compile Remove="Migrations\20190518143357_Timetable.cs" />
+    <Compile Remove="Migrations\20190518143357_Timetable.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -40,6 +40,11 @@ namespace SmartMeal.Data.Repository
             return await _dbContext.Set<T>().ToListAsync();
         }
 
+        public async Task<List<T>> GetAllByAsync(Expression<Func<T, bool>> expression, bool withTracking = false, params Expression<Func<T, object>>[] includes)
+        {
+            return await _dbContext.Set<T>().Where(expression).ToListAsync();
+        }
+
         public async Task<bool> UpdateAsync(T entity)
         {
             _dbSet.Update(entity);
