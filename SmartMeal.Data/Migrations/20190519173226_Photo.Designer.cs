@@ -10,7 +10,7 @@ using SmartMeal.Data.Data;
 namespace SmartMeal.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20190519000111_Photo")]
+    [Migration("20190519173226_Photo")]
     partial class Photo
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -67,12 +67,14 @@ namespace SmartMeal.Data.Migrations
                     b.Property<string>("Description")
                         .IsRequired();
 
-                    b.Property<string>("ImagePath");
+                    b.Property<long?>("ImageId");
 
                     b.Property<string>("Name")
                         .IsRequired();
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ImageId");
 
                     b.ToTable("Product");
                 });
@@ -137,6 +139,13 @@ namespace SmartMeal.Data.Migrations
                     b.HasOne("SmartMeal.Models.Models.Recipe", "Recipe")
                         .WithMany("Ingredients")
                         .HasForeignKey("RecipeId");
+                });
+
+            modelBuilder.Entity("SmartMeal.Models.Models.Product", b =>
+                {
+                    b.HasOne("SmartMeal.Models.Models.Photo", "Image")
+                        .WithMany("Products")
+                        .HasForeignKey("ImageId");
                 });
 
             modelBuilder.Entity("SmartMeal.Models.Models.Timetable", b =>

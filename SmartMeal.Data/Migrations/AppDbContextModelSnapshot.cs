@@ -65,12 +65,14 @@ namespace SmartMeal.Data.Migrations
                     b.Property<string>("Description")
                         .IsRequired();
 
-                    b.Property<string>("ImagePath");
+                    b.Property<long?>("ImageId");
 
                     b.Property<string>("Name")
                         .IsRequired();
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ImageId");
 
                     b.ToTable("Product");
                 });
@@ -135,6 +137,13 @@ namespace SmartMeal.Data.Migrations
                     b.HasOne("SmartMeal.Models.Models.Recipe", "Recipe")
                         .WithMany("Ingredients")
                         .HasForeignKey("RecipeId");
+                });
+
+            modelBuilder.Entity("SmartMeal.Models.Models.Product", b =>
+                {
+                    b.HasOne("SmartMeal.Models.Models.Photo", "Image")
+                        .WithMany("Products")
+                        .HasForeignKey("ImageId");
                 });
 
             modelBuilder.Entity("SmartMeal.Models.Models.Timetable", b =>

@@ -19,6 +19,8 @@
     <Compile Remove="Migrations\20190518141909_Timetable.Designer.cs" />
     <Compile Remove="Migrations\20190518143357_Timetable.cs" />
     <Compile Remove="Migrations\20190518143357_Timetable.Designer.cs" />
+    <Compile Remove="Migrations\20190519000111_Photo.cs" />
+    <Compile Remove="Migrations\20190519000111_Photo.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
