@@ -13,7 +13,6 @@ namespace SmartMeal.Models
         public const string RecipeExist = "The recipe already exists.";
         public const string RecipeDoesntExist = "The recipe doesn't exist";
         public const string TimetableDoesntExist = "The timmetable doesn't exist";
-
         public const string FileIsEmpty = "Przesłano pusty plik.";
         public const string FileWrongContentType = "Nieobsługiwany format danych.";
     }

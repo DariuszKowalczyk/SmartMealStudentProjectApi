@@ -10,5 +10,7 @@ namespace SmartMeal.Service.Interfaces
     public interface IPhotoService
     {
         Task<Response<PhotoDto>> UploadPhotoAsync(IFormFile file);
+
+        Task<Response<PhotoDto>> GetPhotoById(long Id);
     }
 }

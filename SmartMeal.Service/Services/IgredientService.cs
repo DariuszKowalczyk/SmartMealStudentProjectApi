@@ -75,13 +75,8 @@ namespace SmartMeal.Service.Services
         public async Task<Responses<IngredientDto>> GetIngredientsFromRecipe(long recipeId)
         {
             var response = new Responses<IngredientDto>();
-            var recipe = await _recipeRepository.GetByAsync(x => x.Id == recipeId, includes: param => param.Ingredients);
-            if(recipe==null){
-                response.AddError(Error.RecipeDoesntExist);
-                return response;
-            }
+            var ingredients = await _igredientRepository.GetAllByAsync(x => x.Recipe.Id == recipeId, includes: param => param.Product);
 
-            var ingredients = recipe.Ingredients;
             var ingredientsDto = new List<IngredientDto>();
             foreach (var ingrident in ingredients)
             {

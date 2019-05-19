@@ -30,15 +30,19 @@ namespace SmartMeal.Service
 
             // Ingredient
             CreateMap<IngredientBindingModel, Ingredient>()
-                .ForMember(dest => dest.Recipe, opt => opt.Ignore())
                 .ForMember(dest => dest.Recipe, opt => opt.Ignore());
+
             CreateMap<Ingredient, IngredientDto>()
-                .ForMember(dest => dest.Product, opt => opt.MapFrom(i => i.Product.Name));
+                .ForMember(dest => dest.Product, opt => opt.MapFrom((x => Mapper.Map<ProductDto>(x.Product))));
 
             // Timetable
             CreateMap<TimetableBindingModel, Timetable>()
                 .ForMember(dest => dest.Recipe, opt => opt.Ignore());
             CreateMap<Timetable, TimetableDto>();
+
+            // Photo
+            CreateMap<Photo, PhotoDto>()
+                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(i => i.Filename));
         }
 
     }

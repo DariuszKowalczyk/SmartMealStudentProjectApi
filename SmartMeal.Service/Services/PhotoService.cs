@@ -4,10 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using SmartMeal.Data.Repository.Interfaces;
 using SmartMeal.Models;
+using SmartMeal.Models.Models;
 using SmartMeal.Models.ModelsDto;
 using SmartMeal.Service.Interfaces;
 
@@ -17,16 +20,18 @@ namespace SmartMeal.Service.Services
     {
         private readonly string _imagePath;
         private readonly IHostingEnvironment _environment;
+        private readonly IRepository<Photo> _photoRepository;
         private readonly List<string> _acceptContentType = new List<string>()
         {
             "image/jpg", "image/jpeg", "image/png", "image/gif"
         };
 
 
-        public PhotoService(IHostingEnvironment environment)
+        public PhotoService(IHostingEnvironment environment, IRepository<Photo> photoRepository)
         {
             _environment = environment;
             _imagePath = _environment.ContentRootPath + "\\Images\\";
+            _photoRepository = photoRepository;
         }
 
         public async Task<Response<PhotoDto>> UploadPhotoAsync(IFormFile file)
@@ -53,10 +58,23 @@ namespace SmartMeal.Service.Services
 
                 await file.CopyToAsync(stream);
             }
-            var photoDto = new PhotoDto(){ImagePath = fileName };
+            var photo = new Photo()
+            {
+                Filename = fileName,
+                ContentType = file.ContentType,
+                Size = file.Length
+            };
+            await _photoRepository.CreateAsync(photo);
+
+            var photoDto = Mapper.Map<PhotoDto>(photo);
 
             response.Data = photoDto;
             return response;
+        }
+
+        public Task<Response<PhotoDto>> GetPhotoById(long Id)
+        {
+            throw new NotImplementedException();
         }
 
 
