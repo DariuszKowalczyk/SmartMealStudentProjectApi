@@ -4,8 +4,8 @@ using System.Text;
 
 namespace SmartMeal.Models.ModelsDto
 {
-    public class FacebookPictureData
+    public class TokenDto : DtoBaseModel
     {
-        public FacebookPicture Data { get; set; }
+        public string Token { get; set; }
     }
 }

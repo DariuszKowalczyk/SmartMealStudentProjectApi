@@ -11,5 +11,7 @@ namespace SmartMeal.Models.Models
         public string Filename { get; set; }
 
         public long Size { get; set; }
+
+        public virtual ICollection<Product> Products { get; set; }
     }
 }

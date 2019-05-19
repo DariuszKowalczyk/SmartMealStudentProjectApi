@@ -42,7 +42,8 @@ namespace SmartMeal.Service
 
             // Photo
             CreateMap<Photo, PhotoDto>()
-                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(i => i.Filename));
+                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(i => i.Products));
+
         }
 
     }

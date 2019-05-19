@@ -49,7 +49,7 @@ namespace SmartMeal.Tests.UnitTests
             Assert.NotNull(response.Data.Id);
         }
 
-        [Fact]
+//        [Fact]
         public async void should_create_new_product_with_photo()
         {
             var product = new ProductBindingModel()

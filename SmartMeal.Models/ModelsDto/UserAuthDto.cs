@@ -4,8 +4,8 @@ using System.Text;
 
 namespace SmartMeal.Models.ModelsDto
 {
-    public class AuthDto
+    public class UserAuthDto : DtoBaseModel
     {
-        public string Token { get; set; }
+        public long Id { get; set; }
     }
 }

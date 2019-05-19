@@ -7,7 +7,12 @@ namespace SmartMeal.Models.ModelsDto
 {
     public class FacebookUserData
     {
-        public long Id { get; set; }
+        public long Id
+        {
+            get { return FacebookId;}
+            set { FacebookId = value; }
+        }
+        public long FacebookId { get; set; }
         public string Email { get; set; }
     }
 

@@ -19,6 +19,7 @@ namespace SmartMeal.Service.Services
     public class PhotoService : IPhotoService
     {
         private readonly string _imagePath;
+        private readonly string _webPath;
         private readonly IHostingEnvironment _environment;
         private readonly IRepository<Photo> _photoRepository;
         private readonly List<string> _acceptContentType = new List<string>()
@@ -32,6 +33,7 @@ namespace SmartMeal.Service.Services
             _environment = environment;
             _imagePath = _environment.ContentRootPath + "\\Images\\";
             _photoRepository = photoRepository;
+            _webPath = "/static/files/";
         }
 
         public async Task<Response<PhotoDto>> UploadPhotoAsync(IFormFile file)
@@ -72,9 +74,20 @@ namespace SmartMeal.Service.Services
             return response;
         }
 
-        public Task<Response<PhotoDto>> GetPhotoById(long Id)
+        public async Task<Response<PhotoDto>> GetPhotoById(long Id)
         {
-            throw new NotImplementedException();
+            var response = new Response<PhotoDto>();
+
+            var photo = await _photoRepository.GetByAsync(x => x.Id == Id);
+            if(photo == null){
+                response.AddError(Error.ProductDoesntExist);
+                return response;
+            }
+
+            var photoDto = Mapper.Map<PhotoDto>(photo);
+            photoDto.ImagePath = $"{_webPath}{photo.Filename}";
+            response.Data = photoDto;
+            return response;
         }
 
 

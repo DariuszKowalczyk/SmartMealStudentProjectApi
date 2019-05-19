@@ -119,7 +119,7 @@ namespace SmartMeal.Service.Services
                 return response;
             }
 
-            if (product.ImagePath != null)
+            if (product.Image != null)
             {
 
             }
