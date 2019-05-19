@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using SmartMeal.Models.BindingModels;
 using SmartMeal.Models.ModelsDto;
 using SmartMeal.Service.Interfaces;
 
@@ -26,27 +28,17 @@ namespace SmartMeal.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Facebook([FromBody] FacebookAuthDto model)
+        public async Task<IActionResult> Facebook([FromBody] FacebookAuthBindingModel model)
         {
-            var facebookData = await _facebookService.Authentication(model);
-            if (facebookData == null)
+            var response = await _facebookService.Authenticate(model);
+
+            if (response.IsError)
             {
-                return BadRequest();
+                return Unauthorized(response.Errors);
             }
 
-            var user = await _facebookService.GetUser(facebookData);
-            if (user == null)
-            {
-                user = await _facebookService.Register(facebookData);
-            }
+            return Ok(response.Data);
 
-            if (user != null)
-            {
-                var token = _authService.Authenticate(user);
-                return Ok(token);
-            }
-
-            return BadRequest();
         }
     }
 }

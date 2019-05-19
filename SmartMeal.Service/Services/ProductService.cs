@@ -70,7 +70,7 @@ namespace SmartMeal.Service.Services
             }
 
             var productDto = Mapper.Map<ProductDto>(product);
-            if (productDto.ImagePath != "")
+            if (productDto.ImagePath != null)
             {
                 productDto.ImagePath = $"/static/images/{productDto.ImagePath}";
             }
@@ -119,7 +119,7 @@ namespace SmartMeal.Service.Services
                 return response;
             }
 
-            if (product.ImagePath != null)
+            if (product.Image != null)
             {
 
             }

@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features.Authentication;
-using Microsoft.AspNetCore.Identity.UI.V3.Pages.Account.Internal;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using SmartMeal.Models.ModelsDto;
 using SmartMeal.Service.Interfaces;
+using System.Linq;
+using System.Threading.Tasks;
+using SmartMeal.Models.BindingModels;
 
 namespace SmartMeal.Api.Controllers
 {
@@ -27,26 +22,21 @@ namespace SmartMeal.Api.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> CreateToken([FromBody] LoginDto login)
+        public async Task<IActionResult> Authenticate([FromBody] AuthBindingModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState.Values.SelectMany(x => x.Errors.Select(y => y.ErrorMessage)));
             }
 
-            IActionResult response = Unauthorized();
+            var response = await _authService.Authenticate(model);
 
-            var user = await _authService.GetUserAsync(login);
-            if (user != null)
+            if (response.IsError)
             {
-                var token = _authService.Authenticate(user);
-                if(token != null)
-                {
-                    response = Ok(token);
-                }
+                return Unauthorized(response.Errors);
             }
             
-            return response;
+            return Ok(response.Data);
         }
     }
 }

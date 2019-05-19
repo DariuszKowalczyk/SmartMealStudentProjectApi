@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.AspNetCore.Http;
@@ -19,14 +20,11 @@ namespace SmartMeal.Api.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
-        private readonly IHostingEnvironment _environment;
         private readonly string _imagePath;
 
-        public ProductController(IHostingEnvironment environment, IProductService productService)
+        public ProductController(IProductService productService)
         {
-            _environment = environment;
             _productService = productService;
-            _imagePath = _environment.ContentRootPath + "\\Images\\";
         }
 
         [HttpGet]
@@ -42,13 +40,15 @@ namespace SmartMeal.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateProduct([FromBody] ProductBindingModel model)
         {
-            
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
+
+            var userId = User.Identity.Name;
             var response = await _productService.CreateProductAsync(model);
             if (response.IsError)
             {

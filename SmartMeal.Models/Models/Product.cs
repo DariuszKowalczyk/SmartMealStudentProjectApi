@@ -12,7 +12,7 @@ namespace SmartMeal.Models.Models
         [Required]
         public string Description { get; set; }
 
-        public string ImagePath { get; set; }
+        public Photo Image { get; set; }
 
         public virtual ICollection<Ingredient> Ingredients { get; set; }
     }

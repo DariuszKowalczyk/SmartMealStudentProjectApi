@@ -58,11 +58,14 @@ namespace SmartMeal.Api
             {
                 c.SwaggerDoc("v1", new Info { Title = "Smart Meal", Version = "v1" });
             });
+
+            AutoMapperConfig.Initialize();
+
             services.AddCors();
-            Mapper.Initialize(cfg => cfg.AddProfile<MapperProfile>());
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             // Add services
+            services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<ITimetableService, TimetableService>();
             services.AddScoped<IIgredientService, IgredientService>();
             services.AddScoped<IAccountService, AccountService>();

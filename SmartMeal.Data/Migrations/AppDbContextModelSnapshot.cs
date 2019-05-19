@@ -41,6 +41,22 @@ namespace SmartMeal.Data.Migrations
                     b.ToTable("Ingredient");
                 });
 
+            modelBuilder.Entity("SmartMeal.Models.Models.Photo", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ContentType");
+
+                    b.Property<string>("Filename");
+
+                    b.Property<long>("Size");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Photos");
+                });
+
             modelBuilder.Entity("SmartMeal.Models.Models.Product", b =>
                 {
                     b.Property<long>("Id")

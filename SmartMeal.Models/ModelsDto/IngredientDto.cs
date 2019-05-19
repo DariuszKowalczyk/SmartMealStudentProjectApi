@@ -7,7 +7,8 @@ namespace SmartMeal.Models.ModelsDto
     public class IngredientDto : DtoBaseModel
     {
         public int Id { get; set; }
-        public string Product { get; set; }
+
+        public ProductDto Product { get; set; }
 
         public float Amount { get; set; }
 

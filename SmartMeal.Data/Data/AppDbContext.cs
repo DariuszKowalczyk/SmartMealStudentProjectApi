@@ -9,8 +9,8 @@ namespace SmartMeal.Data.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<Recipe> Recipes { get; set; }
-
         public DbSet<Timetable> Timetables { get; set; }
+        public DbSet<Photo> Photos { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -30,8 +30,8 @@ namespace SmartMeal.Data.Data
             // Timetable relations
             modelBuilder.Entity<Timetable>().HasOne(i => i.Recipe).WithMany(r => r.Timetables);
 
-
-
+            // Product relations
+            modelBuilder.Entity<Product>().HasOne(i => i.Image).WithMany(p => p.Products);
 
         }
     }
