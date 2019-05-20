@@ -28,81 +28,133 @@ namespace SmartMeal.Tests.UnitTests
             AutoMapperConfig.Initialize();
         }
 
-//        [Fact]
-//        public async void should_create_new_product_without_photo()
-//        {
-//            var product = new ProductBindingModel()
-//            {
-//                Name = "test",
-//                Description = "DescTest"
-//            };
-//            Mock<IRepository<Product>> _productRepository = new Mock<IRepository<Product>>();
-//            _productRepository.Setup(x => x.CreateAsync(It.IsAny<Product>())).Returns(Task.FromResult(true));
-//            var productService = new ProductService(_productRepository.Object);
-//
-//            var response = await productService.CreateProductAsync(product);
-//
-//            Assert.False(response.IsError);
-//            Assert.Equal(product.Name, response.Data.Name);
-//            Assert.Equal(product.Description, response.Data.Description);
-//            Assert.Null(response.Data.ImagePath);
-//            Assert.NotNull(response.Data.Id);
-//        }
-//
-////        [Fact]
-//        public async void should_create_new_product_with_photo()
-//        {
-//            var product = new ProductBindingModel()
-//            {
-//                Name = "test",
-//                Description = "DescTest",
-//                ImagePath = "test.jpg"
-//            };
-//            Mock<IRepository<Product>> _productRepository = new Mock<IRepository<Product>>();
-//            _productRepository.Setup(x => x.CreateAsync(It.IsAny<Product>())).Returns(Task.FromResult(true));
-//            var productService = new ProductService(_productRepository.Object);
-//
-//            var response = await productService.CreateProductAsync(product);
-//
-//            Assert.False(response.IsError);
-//            Assert.NotNull(response.Data.Id);
-//            Assert.Equal(product.Name, response.Data.Name);
-//            Assert.Equal(product.Description, response.Data.Description);
-//            Assert.Equal($"/static/files/{product.ImagePath}", response.Data.ImagePath);
-//        }
-//
-//        [Fact]
-//        public async void should_create_given_product_name_already_exist()
-//        {
-//            var product = new ProductBindingModel()
-//            {
-//                Name = "test",
-//                Description = "DescTest"
-//            };
-//            Mock<IRepository<Product>> _productRepository = new Mock<IRepository<Product>>();
-//            _productRepository.Setup(x => x.AnyExist(It.IsAny<Expression<Func<Product, bool>>>())).Returns(Task.FromResult(true));
-//            var productService = new ProductService(_productRepository.Object);
-//
-//            var response = await  productService.CreateProductAsync(product);
-//
-//            Assert.True(response.IsError);
-//            Assert.Equal(Error.ProductExist, response.Errors[0]);
-//        }
-//
-//        [Fact]
-//        public async void should_delete_given_product_not_found()
-//        {
-//
-//            Mock<IRepository<Product>> _productRepository = new Mock<IRepository<Product>>();
-//            _productRepository.Setup(x => x.GetByAsync(It.IsAny<Expression<Func<Product, bool>>>(), It.IsAny<bool>())).ReturnsAsync((Product)null);
-//            var productService = new ProductService(_productRepository.Object);
-//
-//            var response = await productService.DeleteProductAsync(0);
-//
-//            Assert.True(response.IsError);
-//            Assert.Equal(Error.ProductDoesntExist, response.Errors[0]);
-//        }
-//
+        [Fact]
+        public async void should_create_new_product_without_photo()
+        {
+            var productBindingModel = new ProductBindingModel()
+            {
+                Name = "test",
+                Description = "DescTest"
+            };
+            var user = new User()
+            {
+                Id = 1,
+                Email = "test@test.pl"
+            };
+            Mock<IRepository<Product>> _productRepository = new Mock<IRepository<Product>>();
+            _productRepository.Setup(x => x.CreateAsync(It.IsAny<Product>()))
+                .Returns(Task.FromResult(true));
+            Mock<IRepository<Photo>> _photoRepository = new Mock<IRepository<Photo>>();
+            _photoRepository.Setup(x => x.GetByAsync(It.IsAny<Expression<Func<Photo, bool>>>(), It.IsAny<bool>()))
+                .ReturnsAsync((Photo) null);
+            Mock<IRepository<User>> _userRepository = new Mock<IRepository<User>>();
+            _userRepository.Setup(x => x.GetByAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<bool>()))
+                .ReturnsAsync(user);
+
+            
+            var productService = new ProductService(_productRepository.Object, _userRepository.Object, _photoRepository.Object);
+
+            var response = await productService.CreateProductAsync(productBindingModel, user.Id);
+
+            Assert.False(response.IsError);
+            Assert.Equal(productBindingModel.Name, response.Data.Name);
+            Assert.Equal(productBindingModel.Description, response.Data.Description);
+            Assert.Null(response.Data.ImagePath);
+            Assert.NotNull(response.Data.Id);
+        }
+
+        [Fact]
+        public async void should_create_new_product_with_photo()
+        {
+            var productBindingModel = new ProductBindingModel()
+            {
+                Name = "test",
+                Description = "DescTest",
+                ImagePath = "test.jpg"
+            };
+            var user = new User()
+            {
+                Id = 1,
+                Email = "test@test.pl"
+            };
+            var photo = new Photo()
+            {
+                Id = 1,
+                Filename = "test.jpg"
+
+            };
+            Mock<IRepository<Product>> _productRepository = new Mock<IRepository<Product>>();
+            _productRepository.Setup(x => x.CreateAsync(It.IsAny<Product>())).Returns(Task.FromResult(true));
+            Mock<IRepository<Photo>> _photoRepository = new Mock<IRepository<Photo>>();
+            _photoRepository.Setup(x => x.GetByAsync(It.IsAny<Expression<Func<Photo, bool>>>(), It.IsAny<bool>()))
+                .ReturnsAsync(photo);
+            Mock<IRepository<User>> _userRepository = new Mock<IRepository<User>>();
+            _userRepository.Setup(x => x.GetByAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<bool>()))
+                .ReturnsAsync(user);
+            var productService = new ProductService(_productRepository.Object, _userRepository.Object, _photoRepository.Object);
+
+            var response = await productService.CreateProductAsync(productBindingModel, user.Id);
+
+            Assert.False(response.IsError);
+            Assert.NotNull(response.Data.Id);
+            Assert.Equal(productBindingModel.Name, response.Data.Name);
+            Assert.Equal(productBindingModel.Description, response.Data.Description);
+            Assert.Equal(productBindingModel.ImagePath, response.Data.ImagePath);
+        }
+
+        [Fact]
+        public async void should_create_given_product_name_already_exist()
+        {
+            var productBindingModel = new ProductBindingModel()
+            {
+                Name = "test",
+                Description = "DescTest",
+                ImagePath = "test.jpg"
+            };
+            var user = new User()
+            {
+                Id = 1,
+                Email = "test@test.pl"
+            };
+            Mock<IRepository<Product>> _productRepository = new Mock<IRepository<Product>>();
+            _productRepository.Setup(x => x.AnyExist(It.IsAny<Expression<Func<Product, bool>>>()))
+                .Returns(Task.FromResult(true));
+            Mock<IRepository<Photo>> _photoRepository = new Mock<IRepository<Photo>>();
+            _photoRepository.Setup(x => x.GetByAsync(It.IsAny<Expression<Func<Photo, bool>>>(), It.IsAny<bool>()))
+                .ReturnsAsync((Photo)null);
+            Mock<IRepository<User>> _userRepository = new Mock<IRepository<User>>();
+            _userRepository.Setup(x => x.GetByAsync(It.IsAny<Expression<Func<User, bool>>>(), It.IsAny<bool>()))
+                .ReturnsAsync(user);
+            var productService = new ProductService(_productRepository.Object, _userRepository.Object, _photoRepository.Object);
+
+            var response = await  productService.CreateProductAsync(productBindingModel, user.Id);
+
+            Assert.True(response.IsError);
+            Assert.Equal(Error.ProductExist, response.Errors[0]);
+        }
+
+        [Fact]
+        public async void should_delete_given_product_not_found()
+        {
+            var user = new User()
+            {
+                Id = 1,
+                Email = "test@test.pl"
+            };
+            Mock<IRepository<Product>> _productRepository = new Mock<IRepository<Product>>();
+            _productRepository.Setup(x => x.GetByAsync(It.IsAny<Expression<Func<Product, bool>>>(), It.IsAny<bool>()))
+                .ReturnsAsync((Product)null);
+            Mock<IRepository<User>> _userRepository = new Mock<IRepository<User>>();
+            Mock<IRepository<Photo>> _photoRepository = new Mock<IRepository<Photo>>();
+
+            var productService = new ProductService(_productRepository.Object, _userRepository.Object, _photoRepository.Object);
+
+            var response = await productService.DeleteProductAsync(0);
+
+            Assert.True(response.IsError);
+            Assert.Equal(Error.ProductDoesntExist, response.Errors[0]);
+        }
+
 //        [Fact]
 //        public async void should_delete_product()
 //        {
