@@ -10,7 +10,7 @@ namespace SmartMeal.Models
         public const string ProductExist = "Produkt o danej nazwie już istnieje.";
         public const string ProductDoesntExist = "Nie odnaleziono danego produktu.";
         public const string ProductErrorWhenDelete = "Wystąpił błąd podczas usuwania produktu.";
-
+        public const string ProductErrorWhenUpdate = "Wystąpił błąd podczas aktualizacji produktu";
 
 
         public const string AuthenticationError = "Bad login and/or password.";

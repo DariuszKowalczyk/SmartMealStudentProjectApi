@@ -221,8 +221,164 @@ namespace SmartMeal.Tests.UnitTests
 
             Assert.False(response.IsError);
             Assert.True(response.Data.Count == 2);
+        }
+        [Fact]
+        public async void should_return_empty_list_of_product()
+        {
+            var productList = new List<Product>();
+            Mock<IRepository<Product>> _productRepository = new Mock<IRepository<Product>>();
+            _productRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Product, object>>>()))
+                .ReturnsAsync(productList);
+            Mock<IRepository<User>> _userRepository = new Mock<IRepository<User>>();
+            Mock<IRepository<Photo>> _photoRepository = new Mock<IRepository<Photo>>();
 
+            var productService = new ProductService(_productRepository.Object, _userRepository.Object, _photoRepository.Object);
 
+            var response = await productService.GetProducts();
+
+            Assert.False(response.IsError);
+            Assert.True(response.Data.Count == 0);
+        }
+
+        [Fact]
+        public async void should_product_by_id_with_photo()
+        {
+            var photo = new Photo()
+            {
+                Id = 2,
+                Filename = "test.jpg"
+            };
+            var product = new Product()
+            {
+                Id = 1,
+                Name = "test1",
+                Description = "Opis",
+                Image = photo
+            };
+            Mock<IRepository<Product>> _productRepository = new Mock<IRepository<Product>>();
+            _productRepository.Setup(x => x.GetByAsync(It.IsAny<Expression<Func<Product, bool>>>(), It.IsAny<bool>(), It.IsAny<Expression<Func<Product, object>>>()))
+                .ReturnsAsync(product);
+            Mock<IRepository<User>> _userRepository = new Mock<IRepository<User>>();
+            Mock<IRepository<Photo>> _photoRepository = new Mock<IRepository<Photo>>();
+            var productService = new ProductService(_productRepository.Object, _userRepository.Object, _photoRepository.Object);
+
+            var response = await productService.GetProductById(product.Id);
+
+            Assert.False(response.IsError);
+            Assert.Equal(product.Id, response.Data.Id);
+            Assert.Equal(product.Description, response.Data.Description);
+            Assert.Equal(product.Image.Filename, response.Data.ImagePath);
+        }
+
+        [Fact]
+        public async void should_given_product_not_found()
+        {
+            Mock<IRepository<Product>> _productRepository = new Mock<IRepository<Product>>();
+            _productRepository.Setup(x => x.GetByAsync(It.IsAny<Expression<Func<Product, bool>>>(), It.IsAny<bool>(), It.IsAny<Expression<Func<Product, object>>>()))
+                .ReturnsAsync((Product)null);
+            Mock<IRepository<User>> _userRepository = new Mock<IRepository<User>>();
+            Mock<IRepository<Photo>> _photoRepository = new Mock<IRepository<Photo>>();
+            var productService = new ProductService(_productRepository.Object, _userRepository.Object, _photoRepository.Object);
+
+            var response = await productService.GetProductById(1);
+
+            Assert.True(response.IsError);
+            Assert.Equal(Error.ProductDoesntExist, response.Errors[0]);
+        }
+
+        [Fact]
+        public async void should_update_product_without_photo()
+        {
+            var photo = new Photo()
+            {
+                Id = 1,
+                Filename = "test.jpg"
+            };
+            var productBindingModel = new ProductBindingModel()
+            {
+                Name = "Nowa nazwa",
+                Description = "Nowy Opis",
+                ImagePath = "newTest.jpg"
+            };
+            var product = new Product()
+            {
+                Id = 1,
+                Name = "Nazwa",
+                Description = "Opis",
+                Image = photo
+            };
+            Mock<IRepository<Product>> _productRepository = new Mock<IRepository<Product>>();
+            _productRepository.Setup(x => x.GetByAsync(It.IsAny<Expression<Func<Product, bool>>>(), It.IsAny<bool>()))
+                .ReturnsAsync(product);
+            _productRepository.Setup(x => x.UpdateAsync(It.IsAny<Product>()))
+                .ReturnsAsync(true);
+            Mock<IRepository<User>> _userRepository = new Mock<IRepository<User>>();
+            Mock<IRepository<Photo>> _photoRepository = new Mock<IRepository<Photo>>();
+            var productService = new ProductService(_productRepository.Object, _userRepository.Object, _photoRepository.Object);
+
+            var response = await productService.UpdateProductAsync(productBindingModel, product.Id);
+
+            Assert.False(response.IsError);
+            Assert.Equal(productBindingModel.Name, response.Data.Name);
+            Assert.Equal(productBindingModel.Description, response.Data.Description);
+        }
+
+        [Fact]
+        public async void should_given_update_product_not_found()
+        {
+            var productBindingModel = new ProductBindingModel()
+            {
+                Name = "Nowa nazwa",
+                Description = "Nowy Opis",
+                ImagePath = "newTest.jpg"
+            };
+            Mock<IRepository<Product>> _productRepository = new Mock<IRepository<Product>>();
+            _productRepository.Setup(x => x.GetByAsync(It.IsAny<Expression<Func<Product, bool>>>(), It.IsAny<bool>()))
+                .ReturnsAsync((Product)null);
+            Mock<IRepository<User>> _userRepository = new Mock<IRepository<User>>();
+            Mock<IRepository<Photo>> _photoRepository = new Mock<IRepository<Photo>>();
+            var productService = new ProductService(_productRepository.Object, _userRepository.Object, _photoRepository.Object);
+
+            var response = await productService.UpdateProductAsync(productBindingModel, 1);
+
+            Assert.True(response.IsError);
+            Assert.Equal(Error.ProductDoesntExist, response.Errors[0]);
+        }
+
+        [Fact]
+        public async void should_given_update_product_error_when_update()
+        {
+            var productBindingModel = new ProductBindingModel()
+            {
+                Name = "Nowa nazwa",
+                Description = "Nowy Opis",
+                ImagePath = "newTest.jpg"
+            };
+            var photo = new Photo()
+            {
+                Id = 1,
+                Filename = "test.jpg"
+            };
+            var product = new Product()
+            {
+                Id = 1,
+                Name = "Nazwa",
+                Description = "Opis",
+                Image = photo
+            };
+            Mock<IRepository<Product>> _productRepository = new Mock<IRepository<Product>>();
+            _productRepository.Setup(x => x.GetByAsync(It.IsAny<Expression<Func<Product, bool>>>(), It.IsAny<bool>()))
+                .ReturnsAsync(product);
+            _productRepository.Setup(x => x.UpdateAsync(It.IsAny<Product>()))
+                .ReturnsAsync(false);
+            Mock<IRepository<User>> _userRepository = new Mock<IRepository<User>>();
+            Mock<IRepository<Photo>> _photoRepository = new Mock<IRepository<Photo>>();
+            var productService = new ProductService(_productRepository.Object, _userRepository.Object, _photoRepository.Object);
+
+            var response = await productService.UpdateProductAsync(productBindingModel, 1);
+
+            Assert.True(response.IsError);
+            Assert.Equal(Error.ProductErrorWhenUpdate, response.Errors[0]);
         }
     }
 }

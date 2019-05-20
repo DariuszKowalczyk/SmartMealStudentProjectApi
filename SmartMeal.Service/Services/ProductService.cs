@@ -83,7 +83,7 @@ namespace SmartMeal.Service.Services
 
         public async Task<Response<ProductDto>> UpdateProductAsync(ProductBindingModel model, long id)
         {
-            var response = new Response<ProductDto>();
+           var response = new Response<ProductDto>();
 
             var product = await _productRepository.GetByAsync(x => x.Id == id);
             if (product == null)
@@ -99,7 +99,7 @@ namespace SmartMeal.Service.Services
 
             if (!isUpdated)
             {
-                response.AddError("Wystąpił błąd podczas aktualizowania!");
+                response.AddError(Error.ProductErrorWhenUpdate);
                 return response;
             }
 

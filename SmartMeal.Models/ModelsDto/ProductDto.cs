@@ -7,7 +7,7 @@ namespace SmartMeal.Models.ModelsDto
 {
     public class ProductDto : DtoBaseModel
     {
-        public int? Id { get; set; }
+        public long? Id { get; set; }
 
         public string Name { get; set; }
 
