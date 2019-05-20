@@ -14,6 +14,9 @@ namespace SmartMeal.Models.Models
 
         public Photo Image { get; set; }
 
+        public User CreatedBy { get; set; }
+
         public virtual ICollection<Ingredient> Ingredients { get; set; }
+
     }
 }

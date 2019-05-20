@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net.Http.Headers;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -16,6 +17,7 @@ namespace SmartMeal.Api.Controllers
 {
     [Route("api/[controller]")]
     [Produces("application/json")]
+    [Authorize]
     [ApiController]
     public class ProductController : ControllerBase
     {
@@ -30,6 +32,7 @@ namespace SmartMeal.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetProducts()
         {
+
             var response = await _productService.GetProducts();
             if (response.IsError)
             {
@@ -48,8 +51,8 @@ namespace SmartMeal.Api.Controllers
                 return BadRequest();
             }
 
-            var userId = User.Identity.Name;
-            var response = await _productService.CreateProductAsync(model);
+            var userId = long.Parse(User.FindFirstValue(ClaimsIdentity.DefaultNameClaimType)); ;
+            var response = await _productService.CreateProductAsync(model, userId);
             if (response.IsError)
             {
                 return BadRequest(response.Errors);
@@ -86,6 +89,7 @@ namespace SmartMeal.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(long id)
         {
+
             var response = await _productService.DeleteProductAsync(id);
             if (!response.IsError)
             {
@@ -93,38 +97,5 @@ namespace SmartMeal.Api.Controllers
             }
             return BadRequest(response.Errors);
         }
-
-        [HttpPost("photo")]
-        public async Task<string> UploadProductImage([FromForm(Name = "file")] IFormFile file)
-        {
-            string newFilename;
-            
-            if (file.Length > 0)
-            {
-                string imagePath;
-                do
-                {
-                    newFilename = Guid.NewGuid().ToString().Substring(0, 15) + Path.GetExtension(file.FileName);
-                    imagePath = _imagePath + newFilename;
-                } while (System.IO.File.Exists(imagePath));
-
-
-                using (var stream = new FileStream(imagePath, FileMode.Create))
-                {
-                    stream.Position = 0;
-                    
-                    await file.CopyToAsync(stream);
-                }
-
-                return newFilename;
-            }
-
-            return null;
-        }
-
-       
-
-        
-
     }
 }

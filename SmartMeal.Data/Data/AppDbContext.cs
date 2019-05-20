@@ -32,7 +32,13 @@ namespace SmartMeal.Data.Data
 
             // Product relations
             modelBuilder.Entity<Product>().HasOne(i => i.Image).WithMany(p => p.Products);
+            modelBuilder.Entity<Product>().HasOne(i => i.CreatedBy).WithMany(u => u.Products);
 
+            // Photo relations 
+            modelBuilder.Entity<Photo>().HasOne(i => i.UploadBy).WithMany(u => u.Photos);
+
+            // Recipe relations
+            modelBuilder.Entity<Recipe>().HasOne(i => i.CreatedBy).WithMany(u => u.Recipes);
         }
     }
 }

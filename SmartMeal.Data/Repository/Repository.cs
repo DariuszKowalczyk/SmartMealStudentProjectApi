@@ -35,9 +35,15 @@ namespace SmartMeal.Data.Repository
             
         }
 
-        public async Task<List<T>> GetAllAsync()
+        public async Task<List<T>> GetAllAsync(params Expression<Func<T, object>>[] includes)
         {
-            return await _dbContext.Set<T>().ToListAsync();
+            IQueryable<T> query = _dbSet;
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+            return await query.ToListAsync();
         }
 
         public async Task<List<T>> GetAllByAsync(Expression<Func<T, bool>> expression, bool withTracking = false, params Expression<Func<T, object>>[] includes)

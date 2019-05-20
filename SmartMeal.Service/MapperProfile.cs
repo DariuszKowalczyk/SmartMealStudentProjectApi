@@ -17,7 +17,8 @@ namespace SmartMeal.Service
         {
             
             // Product
-            CreateMap<Product, ProductDto>();
+            CreateMap<Product, ProductDto>()
+                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(i => i.Image.Filename));
             CreateMap<ProductBindingModel, Product>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Ingredients, opt => opt.Ignore());
@@ -42,7 +43,7 @@ namespace SmartMeal.Service
 
             // Photo
             CreateMap<Photo, PhotoDto>()
-                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(i => i.Products));
+                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(i => i.Filename));
 
         }
 

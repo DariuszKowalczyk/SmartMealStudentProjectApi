@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
 using SmartMeal.Data.Repository.Interfaces;
 using SmartMeal.Models;
 using SmartMeal.Models.Models;
 using SmartMeal.Models.ModelsDto;
 using SmartMeal.Service.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SmartMeal.Service.Services
 {
@@ -22,21 +20,23 @@ namespace SmartMeal.Service.Services
         private readonly string _webPath;
         private readonly IHostingEnvironment _environment;
         private readonly IRepository<Photo> _photoRepository;
+        private readonly IRepository<User> _userRepository;
         private readonly List<string> _acceptContentType = new List<string>()
         {
             "image/jpg", "image/jpeg", "image/png", "image/gif"
         };
 
 
-        public PhotoService(IHostingEnvironment environment, IRepository<Photo> photoRepository)
+        public PhotoService(IHostingEnvironment environment, IRepository<Photo> photoRepository, IRepository<User> useRepository)
         {
+            _userRepository = useRepository;
             _environment = environment;
             _imagePath = _environment.ContentRootPath + "\\Images\\";
             _photoRepository = photoRepository;
             _webPath = "/static/files/";
         }
 
-        public async Task<Response<PhotoDto>> UploadPhotoAsync(IFormFile file)
+        public async Task<Response<PhotoDto>> UploadPhotoAsync(IFormFile file, long userId)
         {
             var response = new Response<PhotoDto>();
             if (file == null || file.Length < 0)
@@ -54,6 +54,9 @@ namespace SmartMeal.Service.Services
             }
 
             var fileName = generateImageName(Path.GetExtension(file.FileName));
+
+            var user = await _userRepository.GetByAsync(x => x.Id == userId, withTracking:true);
+
             using (var stream = new FileStream($"{_imagePath}{fileName}", FileMode.Create))
             {
                 stream.Position = 0;
@@ -64,7 +67,9 @@ namespace SmartMeal.Service.Services
             {
                 Filename = fileName,
                 ContentType = file.ContentType,
-                Size = file.Length
+                Size = file.Length,
+                UploadBy = user
+                
             };
             await _photoRepository.CreateAsync(photo);
 
@@ -73,23 +78,6 @@ namespace SmartMeal.Service.Services
             response.Data = photoDto;
             return response;
         }
-
-        public async Task<Response<PhotoDto>> GetPhotoById(long Id)
-        {
-            var response = new Response<PhotoDto>();
-
-            var photo = await _photoRepository.GetByAsync(x => x.Id == Id);
-            if(photo == null){
-                response.AddError(Error.ProductDoesntExist);
-                return response;
-            }
-
-            var photoDto = Mapper.Map<PhotoDto>(photo);
-            photoDto.ImagePath = $"{_webPath}{photo.Filename}";
-            response.Data = photoDto;
-            return response;
-        }
-
 
         private string generateImageName(string extension)
         {

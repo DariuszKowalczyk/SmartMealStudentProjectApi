@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SmartMeal.Service.Interfaces;
 
 namespace SmartMeal.Api.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class PhotoController : ControllerBase
     {
@@ -21,8 +25,10 @@ namespace SmartMeal.Api.Controllers
 
         [HttpPost]
         public async Task<IActionResult> UploadPhoto(IFormFile file)
-        {            
-            var response = await _photoService.UploadPhotoAsync(file);
+        {
+            
+            var userId = long.Parse(User.FindFirstValue(ClaimsIdentity.DefaultNameClaimType));
+            var response = await _photoService.UploadPhotoAsync(file, userId);
             if (response.IsError)
             {
                 return BadRequest(response.Errors);

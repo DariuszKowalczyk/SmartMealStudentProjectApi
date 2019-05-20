@@ -6,7 +6,6 @@ namespace SmartMeal.Models.ModelsDto
 {
     public class PhotoDto : DtoBaseModel
     {
-        public long Id { get; set; }
         public string ImagePath { get; set; }
     }
 }

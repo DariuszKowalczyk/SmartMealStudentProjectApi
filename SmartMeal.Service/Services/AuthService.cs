@@ -1,11 +1,6 @@
 ﻿
 
-using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Reflection.Metadata.Ecma335;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SmartMeal.Data.Repository.Interfaces;
@@ -14,6 +9,11 @@ using SmartMeal.Models.BindingModels;
 using SmartMeal.Models.Models;
 using SmartMeal.Models.ModelsDto;
 using SmartMeal.Service.Interfaces;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SmartMeal.Service.Services
 {
@@ -73,23 +73,25 @@ namespace SmartMeal.Service.Services
 
         private string BuildToken(User user)
         {
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var _options = new IdentityOptions();
+
+            var claims = new[]
             {
-                var claims = new[]
-                {
-                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                };
+//                new Claim(_options.ClaimsIdentity.UserIdClaimType, user.Id.ToString()),
+                new Claim(_options.ClaimsIdentity.UserNameClaimType, user.Id.ToString()), 
+            };
 
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var token = new JwtSecurityToken(_config["Jwt:Issuer"],
+                _config["Jwt:Issuer"],
+                claims,
+                expires: DateTime.Now.AddMinutes(30),
+                signingCredentials: creds);
 
-                var token = new JwtSecurityToken(_config["Jwt:Issuer"],
-                    _config["Jwt:Issuer"],
-                    claims,
-                    expires: DateTime.Now.AddMinutes(30),
-                    signingCredentials: creds);
+            return new JwtSecurityTokenHandler().WriteToken(token);
 
-                return new JwtSecurityTokenHandler().WriteToken(token);
-            }
         }
     }
 }
