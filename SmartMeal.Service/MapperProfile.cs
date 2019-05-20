@@ -40,7 +40,8 @@ namespace SmartMeal.Service
             // Timetable
             CreateMap<TimetableBindingModel, Timetable>()
                 .ForMember(dest => dest.Recipe, opt => opt.Ignore());
-            CreateMap<Timetable, TimetableDto>();
+            CreateMap<Timetable, TimetableDto>()
+                .ForMember(dest => dest.Recipe, opt => opt.MapFrom(x => Mapper.Map<RecipeDto>(x.Recipe)));
 
             // Photo
             CreateMap<Photo, PhotoDto>()

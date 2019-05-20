@@ -9,7 +9,7 @@ namespace SmartMeal.Models.ModelsDto
     {
         public long Id { get; set; }
 
-        public long RecipeId { get; set; }
+        public RecipeDto Recipe { get; set; }
 
         public DateTime MealDay { get; set; }
 

@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using SmartMeal.Data.Repository.Interfaces;
 using SmartMeal.Models;
 using SmartMeal.Models.BindingModels;
 using SmartMeal.Models.Models;
 using SmartMeal.Models.ModelsDto;
 using SmartMeal.Service.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SmartMeal.Service.Services
 {
