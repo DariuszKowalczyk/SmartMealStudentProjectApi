@@ -15,5 +15,7 @@ namespace SmartMeal.Models.Models
         public User UploadBy { get; set; }
 
         public virtual ICollection<Product> Products { get; set; }
+
+        public virtual  ICollection<Recipe> Recipes { get; set; }
     }
 }

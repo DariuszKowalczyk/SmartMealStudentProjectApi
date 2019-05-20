@@ -11,7 +11,7 @@ namespace SmartMeal.Models.Models
 
         public string Description { get; set; }
 
-        public string ImagePath { get; set; }
+        public Photo Image { get; set; }
 
         public User CreatedBy { get; set; }
 

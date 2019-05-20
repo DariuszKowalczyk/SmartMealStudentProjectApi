@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using Remotion.Linq.Clauses;
+﻿using AutoMapper;
 using SmartMeal.Data.Repository.Interfaces;
 using SmartMeal.Models;
 using SmartMeal.Models.BindingModels;
 using SmartMeal.Models.Models;
 using SmartMeal.Models.ModelsDto;
 using SmartMeal.Service.Interfaces;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SmartMeal.Service.Services
 {
@@ -18,9 +14,13 @@ namespace SmartMeal.Service.Services
     {
         private readonly IRepository<Recipe> _recipeRepository;
         private readonly IIgredientService _igredientService;
+        private readonly IRepository<User> _userRepository;
+        private readonly IRepository<Photo> _photoRepository;
 
-        public RecipeService(IRepository<Recipe> recipeRepository, IIgredientService inIgredientService)
+        public RecipeService(IRepository<Recipe> recipeRepository, IIgredientService inIgredientService, IRepository<User> userRepository, IRepository<Photo> photoRepository)
         {
+            _photoRepository = photoRepository;
+            _userRepository = userRepository;
             _recipeRepository = recipeRepository;
             _igredientService = inIgredientService;
         }
@@ -29,7 +29,7 @@ namespace SmartMeal.Service.Services
         public async Task<Responses<RecipeDto>> GetRecipes()
         {
             var response = new Responses<RecipeDto>();
-            var recipes = await _recipeRepository.GetAllAsync();
+            var recipes = await _recipeRepository.GetAllAsync(includes:param => param.Image);
 
             List<RecipeDto> recipesDto = new List<RecipeDto>();
             foreach (var recipe in recipes)
@@ -47,7 +47,7 @@ namespace SmartMeal.Service.Services
             return response;
         }
 
-        public async Task<Response<RecipeDto>> CreateRecipeAsync(RecipeBindingModel model)
+        public async Task<Response<RecipeDto>> CreateRecipeAsync(RecipeBindingModel model, long userId)
         {
             var response = new Response<RecipeDto>();
 
@@ -58,7 +58,12 @@ namespace SmartMeal.Service.Services
                 return response;
             }
 
+            var photo = await _photoRepository.GetByAsync(x => x.Filename == model.ImagePath, withTracking:true);
+            var user = await _userRepository.GetByAsync(x => x.Id == userId, withTracking: true);
+
             var recipe = Mapper.Map<Recipe>(model);
+            recipe.Image = photo;
+            recipe.CreatedBy = user;
 
             bool isCreated = await _recipeRepository.CreateAsync(recipe);
 
@@ -86,7 +91,7 @@ namespace SmartMeal.Service.Services
         public async Task<Response<RecipeDto>> GetRecipeById(long id)
         {
             var response = new Response<RecipeDto>();
-            var recipe = await _recipeRepository.GetByAsync(x => x.Id == id);
+            var recipe = await _recipeRepository.GetByAsync(x => x.Id == id, includes: param => param.Image);
             if (recipe == null)
             {
                 response.AddError(Error.RecipeDoesntExist);
@@ -102,11 +107,6 @@ namespace SmartMeal.Service.Services
             var ingredientsDto = result.Data;
             var recipeDto = Mapper.Map<RecipeDto>(recipe);
             recipeDto.Ingredients = ingredientsDto;
-
-            if (recipeDto.ImagePath != null)
-            {
-                recipeDto.ImagePath = $"/static/images/{recipeDto.ImagePath}";
-            }
 
             response.Data = recipeDto;
             return response;
@@ -149,11 +149,6 @@ namespace SmartMeal.Service.Services
             {
                response.AddError(Error.RecipeDoesntExist);
                return response;
-            }
-
-            if (recipe.ImagePath != null)
-            {
-
             }
 
             var isDeleted = await _recipeRepository.RemoveElement(recipe);

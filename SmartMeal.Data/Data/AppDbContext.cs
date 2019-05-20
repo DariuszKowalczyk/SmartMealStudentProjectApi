@@ -39,6 +39,7 @@ namespace SmartMeal.Data.Data
 
             // Recipe relations
             modelBuilder.Entity<Recipe>().HasOne(i => i.CreatedBy).WithMany(u => u.Recipes);
+            modelBuilder.Entity<Recipe>().HasOne(i => i.Image).WithMany(p => p.Recipes);
         }
     }
 }

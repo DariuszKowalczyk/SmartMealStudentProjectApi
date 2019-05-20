@@ -25,10 +25,11 @@ namespace SmartMeal.Service
 
             // Recipe
             CreateMap<Recipe, RecipeDto>()
-                .ForMember(dest => dest.Ingredients, opt => opt.Ignore());
+                .ForMember(dest => dest.Ingredients, opt => opt.Ignore())
+                .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(x => x.Image.Filename));
             CreateMap<RecipeBindingModel, Recipe>()
                 .ForMember(dest => dest.Ingredients, opt => opt.Ignore());
-
+                
             // Ingredient
             CreateMap<IngredientBindingModel, Ingredient>()
                 .ForMember(dest => dest.Recipe, opt => opt.Ignore());

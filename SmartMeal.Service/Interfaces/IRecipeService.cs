@@ -12,7 +12,7 @@ namespace SmartMeal.Service.Interfaces
     {
         Task<Responses<RecipeDto>> GetRecipes();
 
-        Task<Response<RecipeDto>> CreateRecipeAsync(RecipeBindingModel model);
+        Task<Response<RecipeDto>> CreateRecipeAsync(RecipeBindingModel model, long userId);
 
         Task<Response<RecipeDto>> GetRecipeById(long id);
 

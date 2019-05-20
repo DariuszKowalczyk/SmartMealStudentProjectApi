@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +16,7 @@ namespace SmartMeal.Api.Controllers
 {
     [Route("api/[controller]")]
     [Produces("application/json")]
+    [Authorize]
     [ApiController]
     public class RecipeController : ControllerBase
     {
@@ -48,8 +51,9 @@ namespace SmartMeal.Api.Controllers
             {
                 return BadRequest();
             }
+            var userId = long.Parse(User.FindFirstValue(ClaimsIdentity.DefaultNameClaimType));
 
-            var response = await _recipeService.CreateRecipeAsync(model);
+            var response = await _recipeService.CreateRecipeAsync(model, userId);
             if (response.IsError)
             {
                 return BadRequest(response.Errors);
@@ -94,38 +98,6 @@ namespace SmartMeal.Api.Controllers
             }
             return BadRequest(response.Errors);
 
-        }
-
-       
-
-        
-        [HttpPost]
-        [Route("photo")]
-        public async Task<string> UploadRecipeImage([FromForm(Name = "file")] IFormFile file)
-        {
-            string newFilename;
-
-            if (file.Length > 0)
-            {
-                string imagePath;
-                do
-                {
-                    newFilename = Guid.NewGuid().ToString().Substring(0, 15) + Path.GetExtension(file.FileName);
-                    imagePath = _imagePath + newFilename;
-                } while (System.IO.File.Exists(imagePath));
-
-
-                using (var stream = new FileStream(imagePath, FileMode.Create))
-                {
-                    stream.Position = 0;
-
-                    await file.CopyToAsync(stream);
-                }
-
-                return newFilename;
-            }
-
-            return "Błąd!";
         }
     }
 }
