@@ -70,7 +70,7 @@ namespace SmartMeal.Service.Services
         public async Task<Response<TimetableDto>> GetTimetableById(long id, long userId)
         {
             var response = new Response<TimetableDto>();
-            var timetable = await _timetableRepository.GetByAsync(x => x.Id == id && x.Owner.Id == userId, includes: param => param.Recipe);
+            var timetable = await _timetableRepository.GetByAsync(x => x.Id == id && x.Owner.Id == userId, includes: param => param.Recipe.Image);
             if (timetable == null)
             {
                 response.AddError(Error.TimetableDoesntExist);

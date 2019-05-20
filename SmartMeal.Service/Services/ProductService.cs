@@ -57,10 +57,9 @@ namespace SmartMeal.Service.Services
             bool isCreated = await _productRepository.CreateAsync(product);
 
             if (isCreated)
-            {   
+            {
                 var productDto = Mapper.Map<ProductDto>(product);
                 response.Data = productDto;
-                return response;
             }
 
             return response;
@@ -122,16 +121,11 @@ namespace SmartMeal.Service.Services
                 return response;
             }
 
-            if (product.Image != null)
-            {
-
-            }
-
             var is_deleted = await _productRepository.RemoveElement(product);
 
             if (!is_deleted)
             {
-                response.AddError("błąd usuwania");
+                response.AddError(Error.ProductErrorWhenDelete);
             }
 
             return response;

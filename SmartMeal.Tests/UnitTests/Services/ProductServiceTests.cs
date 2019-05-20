@@ -155,18 +155,74 @@ namespace SmartMeal.Tests.UnitTests
             Assert.Equal(Error.ProductDoesntExist, response.Errors[0]);
         }
 
-//        [Fact]
-//        public async void should_delete_product()
-//        {
-//            var product = new Product();
-//            Mock<IRepository<Product>> _productRepository = new Mock<IRepository<Product>>();
-//            _productRepository.Setup(x => x.GetByAsync(It.IsAny<Expression<Func<Product, bool>>>(), It.IsAny<bool>())).ReturnsAsync(product);
-//            _productRepository.Setup(x => x.RemoveElement(It.IsAny<Product>())).Returns(Task.FromResult(true));
-//            var productService = new ProductService(_productRepository.Object);
-//
-//            var response = await productService.DeleteProductAsync(5);
-//
-//            Assert.False(response.IsError);
-//        }
+        [Fact]
+        public async void should_delete_product()
+        {
+            var product = new Product();
+            Mock<IRepository<Product>> _productRepository = new Mock<IRepository<Product>>();
+            _productRepository.Setup(x => x.GetByAsync(It.IsAny<Expression<Func<Product, bool>>>(), It.IsAny<bool>()))
+                .ReturnsAsync(product);
+            _productRepository.Setup(x => x.RemoveElement(It.IsAny<Product>()))
+                .ReturnsAsync(true);
+            Mock<IRepository<User>> _userRepository = new Mock<IRepository<User>>();
+            Mock<IRepository<Photo>> _photoRepository = new Mock<IRepository<Photo>>();
+
+            var productService = new ProductService(_productRepository.Object, _userRepository.Object, _photoRepository.Object);
+
+            var response = await productService.DeleteProductAsync(5);
+
+            Assert.False(response.IsError);
+        }
+
+        [Fact]
+        public async void should_given_error_when_product_not_delete()
+        {
+            var product = new Product();
+            Mock<IRepository<Product>> _productRepository = new Mock<IRepository<Product>>();
+            _productRepository.Setup(x => x.GetByAsync(It.IsAny<Expression<Func<Product, bool>>>(), It.IsAny<bool>()))
+                .ReturnsAsync(product);
+            _productRepository.Setup(x => x.RemoveElement(It.IsAny<Product>()))
+                .ReturnsAsync(false);
+            Mock<IRepository<User>> _userRepository = new Mock<IRepository<User>>();
+            Mock<IRepository<Photo>> _photoRepository = new Mock<IRepository<Photo>>();
+
+            var productService = new ProductService(_productRepository.Object, _userRepository.Object, _photoRepository.Object);
+
+            var response = await productService.DeleteProductAsync(5);
+
+            Assert.True(response.IsError);
+            Assert.Equal(Error.ProductErrorWhenDelete, response.Errors[0]);
+        }
+
+        [Fact]
+        public async void should_return_list_of_product()
+        {
+            var productList = new List<Product>()
+            {
+                new Product()
+                {
+                    Name = "test1"
+                },
+                new Product()
+                {
+                    Name = "test2"
+                },
+
+            };
+            Mock<IRepository<Product>> _productRepository = new Mock<IRepository<Product>>();
+            _productRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Product, object>>>()))
+                .ReturnsAsync(productList);
+            Mock<IRepository<User>> _userRepository = new Mock<IRepository<User>>();
+            Mock<IRepository<Photo>> _photoRepository = new Mock<IRepository<Photo>>();
+
+            var productService = new ProductService(_productRepository.Object, _userRepository.Object, _photoRepository.Object);
+
+            var response = await productService.GetProducts();
+
+            Assert.False(response.IsError);
+            Assert.True(response.Data.Count == 2);
+
+
+        }
     }
 }
