@@ -16,32 +16,31 @@ namespace SmartMeal.Service.Services
     public class TimetableService : ITimetableService
     {
         private readonly IRepository<Timetable> _timetableRepository;
-//        private readonly IRecipeService _recipeService;
         private readonly IRepository<Recipe> _recipeRepository;
+        public readonly IRepository<User> _userRepository;
 
-        public TimetableService(IRepository<Timetable> timetableRepository, IRepository<Recipe> recipeRepository)
+        public TimetableService(IRepository<Timetable> timetableRepository, IRepository<User> userRepository, IRepository<Recipe> recipeRepository)
         {
             _timetableRepository = timetableRepository;
+            _userRepository = userRepository;
             _recipeRepository = recipeRepository;
         }
 
-
-        public async Task<Responses<TimetableDto>> GetTimetablesByDay(DateTime day)
+        public async Task<Responses<TimetableDto>> GetTimetablesByDay(DateTime day, long userId)
         {
             var resposne = new Responses<TimetableDto>();
-            var timetables = await _timetableRepository.GetAllByAsync(x => x.MealDay == day, includes: x => x.Recipe);
+            var timetables = await _timetableRepository.GetAllByAsync(x => x.MealDay == day && x.Owner.Id == userId, includes: x => x.Recipe.Image);
             var timetableDtos = new List<TimetableDto>();
             foreach (var timetable in timetables)
             {
                 var timetableDto = Mapper.Map<TimetableDto>(timetable);
                 timetableDtos.Add(timetableDto);
             }
-
             resposne.Data = timetableDtos;
             return resposne;
         }
 
-        public async Task<Response<TimetableDto>> CreateTimetable(TimetableBindingModel model)
+        public async Task<Response<TimetableDto>> CreateTimetable(TimetableBindingModel model, long userId)
         {
             var response = new Response<TimetableDto>();
 
@@ -52,9 +51,10 @@ namespace SmartMeal.Service.Services
                 response.AddError(Error.RecipeDoesntExist);
                 return response;
             }
-
+            var user = await _userRepository.GetByAsync(x => x.Id == userId, withTracking: true);
             var timetable = Mapper.Map<Timetable>(model);
             timetable.Recipe = recipe;
+            timetable.Owner = user;
 
             bool isCreated = await _timetableRepository.CreateAsync(timetable);
 
@@ -69,10 +69,10 @@ namespace SmartMeal.Service.Services
 
         }
 
-        public async Task<Response<TimetableDto>> GetTimetableById(long id)
+        public async Task<Response<TimetableDto>> GetTimetableById(long id, long userId)
         {
             var response = new Response<TimetableDto>();
-            var timetable = await _timetableRepository.GetByAsync(x => x.Id == id);
+            var timetable = await _timetableRepository.GetByAsync(x => x.Id == id && x.Owner.Id == userId);
             if (timetable == null)
             {
                 response.AddError(Error.TimetableDoesntExist);
@@ -85,11 +85,11 @@ namespace SmartMeal.Service.Services
             return response;
         }
 
-        public async Task<Response<DtoBaseModel>> DeleteTimetableById(long id)
+        public async Task<Response<DtoBaseModel>> DeleteTimetableById(long id, long userId)
         {
             var response = new Response<DtoBaseModel>();
 
-            var timetable = await _timetableRepository.GetByAsync(x => x.Id == id);
+            var timetable = await _timetableRepository.GetByAsync(x => x.Id == id && x.Owner.Id == userId);
             if (timetable == null)
             {
                 response.AddError(Error.TimetableDoesntExist);

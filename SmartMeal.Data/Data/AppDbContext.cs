@@ -29,6 +29,7 @@ namespace SmartMeal.Data.Data
 
             // Timetable relations
             modelBuilder.Entity<Timetable>().HasOne(i => i.Recipe).WithMany(r => r.Timetables);
+            modelBuilder.Entity<Timetable>().HasOne(i => i.Owner).WithMany(u => u.Timetables);
 
             // Product relations
             modelBuilder.Entity<Product>().HasOne(i => i.Image).WithMany(p => p.Products);

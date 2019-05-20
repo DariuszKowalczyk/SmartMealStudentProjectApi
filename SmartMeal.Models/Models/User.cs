@@ -21,5 +21,7 @@ namespace SmartMeal.Models.Models
 
         public virtual ICollection<Recipe> Recipes { get; set; }
 
+        public virtual ICollection<Timetable> Timetables { get; set; }
+
     }
 }

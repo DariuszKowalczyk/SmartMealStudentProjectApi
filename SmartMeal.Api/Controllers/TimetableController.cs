@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
@@ -12,6 +14,7 @@ using SmartMeal.Service.Interfaces;
 namespace SmartMeal.Api.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class TimetableController : ControllerBase
     {
@@ -26,7 +29,8 @@ namespace SmartMeal.Api.Controllers
         [HttpGet("by")]
         public async Task<IActionResult> GetTimetablesByDay(DateTime day)
         {
-            var response = await _timetableService.GetTimetablesByDay(day);
+            var userId = long.Parse(User.FindFirstValue(ClaimsIdentity.DefaultNameClaimType));
+            var response = await _timetableService.GetTimetablesByDay(day, userId);
             if (response.IsError)
             {
                 return BadRequest(response.Errors);
@@ -37,7 +41,8 @@ namespace SmartMeal.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTimetableById(long id)
         {
-            var response = await _timetableService.GetTimetableById(id);
+            var userId = long.Parse(User.FindFirstValue(ClaimsIdentity.DefaultNameClaimType));
+            var response = await _timetableService.GetTimetableById(id, userId);
             if (response.IsError)
             {
                 return BadRequest(response.Errors);
@@ -53,7 +58,8 @@ namespace SmartMeal.Api.Controllers
             {
                 return BadRequest();
             }
-            var response = await _timetableService.CreateTimetable(model);
+            var userId = long.Parse(User.FindFirstValue(ClaimsIdentity.DefaultNameClaimType));
+            var response = await _timetableService.CreateTimetable(model, userId);
             if (response.IsError)
             {
                 return BadRequest(response.Errors);
@@ -66,7 +72,8 @@ namespace SmartMeal.Api.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteTimetableById(long id)
         {
-            var response = await _timetableService.DeleteTimetableById(id);
+            var userId = long.Parse(User.FindFirstValue(ClaimsIdentity.DefaultNameClaimType));
+            var response = await _timetableService.DeleteTimetableById(id, userId);
             if (!response.IsError)
             {
                 return Ok();
