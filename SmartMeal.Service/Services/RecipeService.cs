@@ -103,7 +103,7 @@ namespace SmartMeal.Service.Services
             var recipeDto = Mapper.Map<RecipeDto>(recipe);
             recipeDto.Ingredients = ingredientsDto;
 
-            if (recipeDto.ImagePath != "")
+            if (recipeDto.ImagePath != null)
             {
                 recipeDto.ImagePath = $"/static/images/{recipeDto.ImagePath}";
             }
