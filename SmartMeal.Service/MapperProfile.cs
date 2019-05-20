@@ -44,6 +44,11 @@ namespace SmartMeal.Service
             CreateMap<Photo, PhotoDto>()
                 .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(i => i.Products));
 
+            // User
+            CreateMap<FacebookUserData, User>()
+                .ForMember(i => i.Password, opt => opt.Ignore())
+                .ForMember(i => i.Id, opt => opt.Ignore());
+
         }
 
     }
