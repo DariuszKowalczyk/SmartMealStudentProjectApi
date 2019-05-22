@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using SmartMeal.Models.Models;
 
 namespace SmartMeal.Models.ModelsDto
 {
@@ -12,7 +13,7 @@ namespace SmartMeal.Models.ModelsDto
 
         public float Amount { get; set; }
 
-        public string Metric { get; set; }
+        public Metrics Metric { get; set; }
 
     }
 }
