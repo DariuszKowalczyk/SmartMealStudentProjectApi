@@ -24,7 +24,8 @@ namespace SmartMeal.Data.Data
             modelBuilder.Entity<Recipe>().ToTable("Recipe");
 
             // Ingredient relations
-            modelBuilder.Entity<Ingredient>().HasOne(i => i.Recipe).WithMany(r => r.Ingredients);
+            modelBuilder.Entity<Ingredient>().HasOne(i => i.Recipe).WithMany(r => r.Ingredients)
+                .HasForeignKey(r => r.Id).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Ingredient>().HasOne(i => i.Product).WithMany(p => p.Ingredients);
 
             // Timetable relations
