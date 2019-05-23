@@ -6,6 +6,7 @@ using SmartMeal.Models.Models;
 using SmartMeal.Models.ModelsDto;
 using SmartMeal.Service.Interfaces;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace SmartMeal.Service.Services
@@ -17,12 +18,12 @@ namespace SmartMeal.Service.Services
         private readonly IRepository<User> _userRepository;
         private readonly IRepository<Photo> _photoRepository;
 
-        public RecipeService(IRepository<Recipe> recipeRepository, IIgredientService inIgredientService, IRepository<User> userRepository, IRepository<Photo> photoRepository)
+        public RecipeService(IRepository<Recipe> recipeRepository, IIgredientService IgredientService, IRepository<User> userRepository, IRepository<Photo> photoRepository)
         {
             _photoRepository = photoRepository;
             _userRepository = userRepository;
             _recipeRepository = recipeRepository;
-            _igredientService = inIgredientService;
+            _igredientService = IgredientService;
         }
 
 
@@ -69,7 +70,7 @@ namespace SmartMeal.Service.Services
 
             if (!isCreated)
             {
-                response.AddError("błąd Podczas tworzenia przepisu!");
+                response.AddError(Error.RecipeErrorWhenCreated);
                 return response;
             }
 
@@ -77,6 +78,7 @@ namespace SmartMeal.Service.Services
             var result = await _igredientService.CreateIngredientsToRecipe(recipe.Id, model.Ingredients);
             if (result.IsError)
             {
+                await _recipeRepository.RemoveElement(recipe);
                 response.Errors = result.Errors;
                 return response;
             }

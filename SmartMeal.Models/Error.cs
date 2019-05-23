@@ -12,12 +12,17 @@ namespace SmartMeal.Models
         public const string ProductErrorWhenDelete = "Wystąpił błąd podczas usuwania produktu.";
         public const string ProductErrorWhenUpdate = "Wystąpił błąd podczas aktualizacji produktu";
 
+        // Recipe
+        public const string RecipeExist = "Przepis o danej nazwie już istnieje.";
+        public const string RecipeDoesntExist = "Nie odnaleziono danego przepisu.";
+        public const string RecipeErrorWhenCreated = "Wystąpił błąd poczas tworzenia przepisu.";
+        // Ingredient
+        public const string IngredientErrorWhenCreated = "Wystąpił błąd podczas tworzenia składnika.";
         public const string IngredientCreateFails = "Błąd podczas tworzenia składników";
+
         public const string AuthenticationError = "Bad login and/or password.";
         public const string UserExist = "The user already exists.";
         public const string RegisterDtoIsNotValid = "Data is not valid.";
-        public const string RecipeExist = "The recipe already exists.";
-        public const string RecipeDoesntExist = "The recipe doesn't exist";
         public const string TimetableDoesntExist = "The timmetable doesn't exist";
         public const string FileIsEmpty = "Przesłano pusty plik.";
         public const string FileWrongContentType = "Nieobsługiwany format danych.";
