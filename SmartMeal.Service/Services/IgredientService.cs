@@ -57,7 +57,7 @@ namespace SmartMeal.Service.Services
 
             if (!areCreated)
             {
-               response.AddError("Błąd podczas tworzenia składników");
+               response.AddError(Error.IngredientCreateFails);
                return response;
             }
             List<IngredientDto> ingredientDtos = new List<IngredientDto>();

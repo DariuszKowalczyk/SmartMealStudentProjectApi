@@ -42,8 +42,10 @@ namespace SmartMeal.Tests.UnitTests
                 Email = "test@test.pl"
             };
             Mock<IRepository<Product>> _productRepository = new Mock<IRepository<Product>>();
+
             _productRepository.Setup(x => x.CreateAsync(It.IsAny<Product>()))
                 .Returns(Task.FromResult(true));
+
             Mock<IRepository<Photo>> _photoRepository = new Mock<IRepository<Photo>>();
             _photoRepository.Setup(x => x.GetByAsync(It.IsAny<Expression<Func<Photo, bool>>>(), It.IsAny<bool>()))
                 .ReturnsAsync((Photo) null);

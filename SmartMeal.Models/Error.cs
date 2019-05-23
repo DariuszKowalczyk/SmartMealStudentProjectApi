@@ -12,7 +12,7 @@ namespace SmartMeal.Models
         public const string ProductErrorWhenDelete = "Wystąpił błąd podczas usuwania produktu.";
         public const string ProductErrorWhenUpdate = "Wystąpił błąd podczas aktualizacji produktu";
 
-
+        public const string IngredientCreateFails = "Błąd podczas tworzenia składników";
         public const string AuthenticationError = "Bad login and/or password.";
         public const string UserExist = "The user already exists.";
         public const string RegisterDtoIsNotValid = "Data is not valid.";

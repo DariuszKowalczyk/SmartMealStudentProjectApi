@@ -31,7 +31,7 @@ namespace SmartMeal.Service
     {
         public List<T> Data { get; set; }
 
-        public bool IsError;
+        public bool IsError => Errors.Count > 0;
 
         public List<string> Errors { get; set; }
 
