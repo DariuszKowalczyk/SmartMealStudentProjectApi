@@ -124,8 +124,7 @@ namespace SmartMeal.Tests.UnitTests.Services
 
             var ingredientService = new IgredientService(_ingredientRepository.Object, _recipeRepository.Object, _productRepository.Object);
             var response = await ingredientService.CreateIngredientsToRecipe(1, ingredientsBindingModel);
-            // ITS NOT SET TO TRUE WHY ?
-            //Assert.True(response.IsError);
+            Assert.True(response.IsError);
             Assert.Equal(Error.RecipeDoesntExist, response.Errors[0]);
         }
         [Fact]
@@ -174,7 +173,7 @@ namespace SmartMeal.Tests.UnitTests.Services
 
             var ingredientService = new IgredientService(_ingredientRepository.Object, _recipeRepository.Object, _productRepository.Object);
             var response = await ingredientService.CreateIngredientsToRecipe(1, ingredientsBindingModel);
-            //Assert.True(response.IsError);
+            Assert.True(response.IsError);
             Assert.Equal(Error.ProductDoesntExist, response.Errors[0]);
         }
         [Fact]
@@ -226,7 +225,7 @@ namespace SmartMeal.Tests.UnitTests.Services
 
             var ingredientService = new IgredientService(_ingredientRepository.Object, _recipeRepository.Object, _productRepository.Object);
             var response = await ingredientService.CreateIngredientsToRecipe(1, ingredientsBindingModel);
-            //Assert.True(response.IsError);
+            Assert.True(response.IsError);
             Assert.Equal(Error.IngredientCreateFails, response.Errors[0]);
         }
 
@@ -266,7 +265,7 @@ namespace SmartMeal.Tests.UnitTests.Services
                 },
                 new Ingredient()
                 {
-                Id = 1,
+                Id = 2,
                 Metric = Metrics.Kilogram,
                 Product = product,
                 Amount = 3,
@@ -289,13 +288,15 @@ namespace SmartMeal.Tests.UnitTests.Services
                 .ReturnsAsync(recipe);
 
             Mock<IRepository<Ingredient>> _ingredientRepository = new Mock<IRepository<Ingredient>>();
-            _ingredientRepository.Setup(x => x.GetAllByAsync(It.IsAny<Expression<Func<Ingredient, bool>>>(), It.IsAny<bool>()))
+            _ingredientRepository.Setup(x => x.GetAllByAsync(It.IsAny<Expression<Func<Ingredient, bool>>>(), It.IsAny<bool>(), It.IsAny<Expression<Func<Ingredient, object>>>()))
                 .ReturnsAsync(ingredientsTest);
 
             var ingredientService = new IgredientService(_ingredientRepository.Object, _recipeRepository.Object, _productRepository.Object);
             var response = await ingredientService.GetIngredientsFromRecipe(1);
             Assert.False(response.IsError);
-         
+            Assert.True(response.Data.Count == 2);
+            Assert.Equal(response.Data[0].Id, 1);
+            Assert.Equal(response.Data[1].Id, 2);
         }
     }
 }
