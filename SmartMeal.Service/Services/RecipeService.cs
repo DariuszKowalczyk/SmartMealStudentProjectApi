@@ -157,7 +157,7 @@ namespace SmartMeal.Service.Services
 
             if (!isDeleted)
             {
-                response.AddError("Błąd przy usuwaniu");
+                response.AddError(Error.RecipeErrorWhenDeleted);
             }
 
             return response;

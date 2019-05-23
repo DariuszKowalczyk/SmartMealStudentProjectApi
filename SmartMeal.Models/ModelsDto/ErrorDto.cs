@@ -6,6 +6,6 @@ namespace SmartMeal.Models.ModelsDto
 {
     public class ErrorDto
     {
-        public List<string> errors;
+        public string Message { get; set; }
     }
 }

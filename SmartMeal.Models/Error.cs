@@ -16,6 +16,8 @@ namespace SmartMeal.Models
         public const string RecipeExist = "Przepis o danej nazwie już istnieje.";
         public const string RecipeDoesntExist = "Nie odnaleziono danego przepisu.";
         public const string RecipeErrorWhenCreated = "Wystąpił błąd poczas tworzenia przepisu.";
+        public const string RecipeErrorWhenDeleted = "Wystąpił błąd podczas usuwania przepisu.";
+
         // Ingredient
         public const string IngredientErrorWhenCreated = "Wystąpił błąd podczas tworzenia składnika.";
         public const string IngredientCreateFails = "Błąd podczas tworzenia składników";

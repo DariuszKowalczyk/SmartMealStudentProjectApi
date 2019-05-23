@@ -125,7 +125,7 @@ namespace SmartMeal.Tests.UnitTests.Services
             var ingredientService = new IgredientService(_ingredientRepository.Object, _recipeRepository.Object, _productRepository.Object);
             var response = await ingredientService.CreateIngredientsToRecipe(1, ingredientsBindingModel);
             Assert.True(response.IsError);
-            Assert.Equal(Error.RecipeDoesntExist, response.Errors[0]);
+            Assert.Equal(Error.RecipeDoesntExist, response.Errors[0].Message);
         }
         [Fact]
         public async void given_recipe_product_doesnt_exist_should_return_error()
@@ -174,7 +174,7 @@ namespace SmartMeal.Tests.UnitTests.Services
             var ingredientService = new IgredientService(_ingredientRepository.Object, _recipeRepository.Object, _productRepository.Object);
             var response = await ingredientService.CreateIngredientsToRecipe(1, ingredientsBindingModel);
             Assert.True(response.IsError);
-            Assert.Equal(Error.ProductDoesntExist, response.Errors[0]);
+            Assert.Equal(Error.ProductDoesntExist, response.Errors[0].Message);
         }
         [Fact]
         public async void given_recipe_failes_on_create_range_async()
@@ -226,7 +226,7 @@ namespace SmartMeal.Tests.UnitTests.Services
             var ingredientService = new IgredientService(_ingredientRepository.Object, _recipeRepository.Object, _productRepository.Object);
             var response = await ingredientService.CreateIngredientsToRecipe(1, ingredientsBindingModel);
             Assert.True(response.IsError);
-            Assert.Equal(Error.IngredientCreateFails, response.Errors[0]);
+            Assert.Equal(Error.IngredientCreateFails, response.Errors[0].Message);
         }
 
         [Fact]

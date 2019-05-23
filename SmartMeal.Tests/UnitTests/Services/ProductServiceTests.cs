@@ -132,7 +132,7 @@ namespace SmartMeal.Tests.UnitTests
             var response = await  productService.CreateProductAsync(productBindingModel, user.Id);
 
             Assert.True(response.IsError);
-            Assert.Equal(Error.ProductExist, response.Errors[0]);
+            Assert.Equal(Error.ProductExist, response.Errors[0].Message);
         }
 
         [Fact]
@@ -154,7 +154,7 @@ namespace SmartMeal.Tests.UnitTests
             var response = await productService.DeleteProductAsync(0);
 
             Assert.True(response.IsError);
-            Assert.Equal(Error.ProductDoesntExist, response.Errors[0]);
+            Assert.Equal(Error.ProductDoesntExist, response.Errors[0].Message);
         }
 
         [Fact]
@@ -193,7 +193,7 @@ namespace SmartMeal.Tests.UnitTests
             var response = await productService.DeleteProductAsync(5);
 
             Assert.True(response.IsError);
-            Assert.Equal(Error.ProductErrorWhenDelete, response.Errors[0]);
+            Assert.Equal(Error.ProductErrorWhenDelete, response.Errors[0].Message);
         }
 
         [Fact]
@@ -285,7 +285,7 @@ namespace SmartMeal.Tests.UnitTests
             var response = await productService.GetProductById(1);
 
             Assert.True(response.IsError);
-            Assert.Equal(Error.ProductDoesntExist, response.Errors[0]);
+            Assert.Equal(Error.ProductDoesntExist, response.Errors[0].Message);
         }
 
         [Fact]
@@ -344,7 +344,7 @@ namespace SmartMeal.Tests.UnitTests
             var response = await productService.UpdateProductAsync(productBindingModel, 1);
 
             Assert.True(response.IsError);
-            Assert.Equal(Error.ProductDoesntExist, response.Errors[0]);
+            Assert.Equal(Error.ProductDoesntExist, response.Errors[0].Message);
         }
 
         [Fact]
@@ -380,7 +380,7 @@ namespace SmartMeal.Tests.UnitTests
             var response = await productService.UpdateProductAsync(productBindingModel, 1);
 
             Assert.True(response.IsError);
-            Assert.Equal(Error.ProductErrorWhenUpdate, response.Errors[0]);
+            Assert.Equal(Error.ProductErrorWhenUpdate, response.Errors[0].Message);
         }
     }
 }
