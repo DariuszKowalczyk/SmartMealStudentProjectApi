@@ -50,6 +50,11 @@ namespace SmartMeal.Service.Services
                 return response;
             }
             var user = await _userRepository.GetByAsync(x => x.Id == userId, withTracking: true);
+            if (user == null)
+            {
+                response.AddError(Error.UserDoesntExist);
+                return response;
+            }
             var timetable = Mapper.Map<Timetable>(model);
             timetable.Recipe = recipe;
             timetable.Owner = user;
@@ -62,8 +67,12 @@ namespace SmartMeal.Service.Services
                 response.Data = timetableDto;
                 return response;
             }
+            else
+            { 
+                response.AddError(Error.TimeTableCreateFails);
+                return response;
+            }
 
-            return response;
 
         }
 
@@ -97,7 +106,7 @@ namespace SmartMeal.Service.Services
             bool IsDeleted = await _timetableRepository.RemoveElement(timetable);
             if (!IsDeleted)
             {
-                response.AddError("Błąd podczas usuwania harmonogramu");
+                response.AddError(Error.TimeTableCreateFails);
                 return response;
             }
 

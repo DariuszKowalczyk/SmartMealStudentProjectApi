@@ -230,7 +230,7 @@ namespace SmartMeal.Tests.UnitTests.Services
         }
 
         [Fact]
-        public async void given_recipe_id_should_return_list_of_ingredients()
+        public async void given_recipe_id_doesnt_exist_should_return_error()
         {
           
             var user = new User()
@@ -253,31 +253,7 @@ namespace SmartMeal.Tests.UnitTests.Services
                 CreatedBy = user,
                 Image = null,
             };
-            var ingredientsTest = new List<Ingredient>()
-            {
-                new Ingredient()
-                {
-                    Id = 1,
-                    Metric = Metrics.Glass,
-                    Product = product,
-                    Amount = 2,
-                    Recipe = recipe,
-                },
-                new Ingredient()
-                {
-                Id = 2,
-                Metric = Metrics.Kilogram,
-                Product = product,
-                Amount = 3,
-                Recipe = recipe,
-            }
-            };
-         
-
-
-            Mock <IRepository<User>> _userRepository = new Mock<IRepository<User>>();
-
-          
+            var ingredientsTest = new List<Ingredient>();
 
             Mock<IRepository<Product>> _productRepository = new Mock<IRepository<Product>>();
             _productRepository.Setup(x => x.GetByAsync(It.IsAny<Expression<Func<Product, bool>>>(), It.IsAny<bool>()))
@@ -294,9 +270,8 @@ namespace SmartMeal.Tests.UnitTests.Services
             var ingredientService = new IgredientService(_ingredientRepository.Object, _recipeRepository.Object, _productRepository.Object);
             var response = await ingredientService.GetIngredientsFromRecipe(1);
             Assert.False(response.IsError);
-            Assert.True(response.Data.Count == 2);
-            Assert.Equal(response.Data[0].Id, 1);
-            Assert.Equal(response.Data[1].Id, 2);
+            Assert.True(response.Data.Count == 0);
+         
         }
     }
 }
