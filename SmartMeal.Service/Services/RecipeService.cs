@@ -100,12 +100,7 @@ namespace SmartMeal.Service.Services
                 return response;
             }
             var result = await _igredientService.GetIngredientsFromRecipe(id);
-            if (result.IsError)
-            {
-                response.Errors = result.Errors;
-                return response;
-            }
-
+           
             var ingredientsDto = result.Data;
             var recipeDto = Mapper.Map<RecipeDto>(recipe);
             recipeDto.Ingredients = ingredientsDto;
@@ -132,7 +127,7 @@ namespace SmartMeal.Service.Services
 
             if (!isUpdated)
             {
-                response.AddError("Wystąpił błąd podczas aktualizowania!");
+                response.AddError(Error.RecipeErrorWhenUpdate);
                 return response;
             }
 
