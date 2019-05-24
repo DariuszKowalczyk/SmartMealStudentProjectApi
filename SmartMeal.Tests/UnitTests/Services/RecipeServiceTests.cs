@@ -411,6 +411,147 @@ namespace SmartMeal.Tests.UnitTests.Services
             Assert.Equal(recipe.Image.Filename, response.Data.ImagePath);
             Assert.Equal(2, response.Data.Ingredients.Count);
         }
+
+        [Fact]
+        public async void should_fail_doesnt_exist_recipe_by_id()
+        {
+            Mock<IRepository<Photo>> _photoRepository = new Mock<IRepository<Photo>>();
+            Mock<IRepository<User>> _userRepository = new Mock<IRepository<User>>();
+            Mock<IRepository<Recipe>> _recipeRepository = new Mock<IRepository<Recipe>>();
+            _recipeRepository.Setup(x => x.GetByAsync(It.IsAny<Expression<Func<Recipe, bool>>>(), It.IsAny<bool>(), It.IsAny<Expression<Func<Recipe, object>>>()))
+                .ReturnsAsync((Recipe)null);
+            Mock<IIgredientService> _ingredientService = new Mock<IIgredientService>();
+            var recipeService = new RecipeService(_recipeRepository.Object, _ingredientService.Object, _userRepository.Object, _photoRepository.Object);
+
+            var response = await recipeService.GetRecipeById(1);
+
+            Assert.True(response.IsError);
+            Assert.Equal(Error.RecipeDoesntExist, response.Errors[0].Message);
+        }
+
+        [Fact]
+        public async void should_return_list_of_product()
+        {
+            var result = new Responses<IngredientDto>()
+            {
+                Data = new List<IngredientDto>()
+            };
+            var listOfRecipe = new List<Recipe>()
+            {
+                new Recipe(),
+                new Recipe()
+            };
+            
+            Mock<IRepository<Photo>> _photoRepository = new Mock<IRepository<Photo>>();
+            Mock<IRepository<User>> _userRepository = new Mock<IRepository<User>>();
+            Mock<IRepository<Recipe>> _recipeRepository = new Mock<IRepository<Recipe>>();
+            _recipeRepository.Setup(x => x.GetAllAsync(It.IsAny<Expression<Func<Recipe, object>>>()))
+                .ReturnsAsync(listOfRecipe);
+            Mock<IIgredientService> _ingredientService = new Mock<IIgredientService>();
+            _ingredientService.Setup(x => x.GetIngredientsFromRecipe(It.IsAny<long>())).ReturnsAsync(result);
+            var recipeService = new RecipeService(_recipeRepository.Object, _ingredientService.Object, _userRepository.Object, _photoRepository.Object);
+
+            var response = await recipeService.GetRecipes();
+
+            Assert.False(response.IsError);
+            Assert.Equal(2, response.Data.Count);
+        }
+
+        [Fact]
+        public async void should_update_recipe()
+        {
+            var recipe = new Recipe()
+            {
+                Id = 1,
+                Name = "old",
+                Description = "old",
+                Image = null,
+            };
+            var recipeBindingModel = new RecipeBindingModel()
+            {
+                Name = "new",
+                Description = "new",
+                ImagePath = null,
+            };
+    
+            Mock<IRepository<Photo>> _photoRepository = new Mock<IRepository<Photo>>();
+            Mock<IRepository<User>> _userRepository = new Mock<IRepository<User>>();
+            Mock<IRepository<Recipe>> _recipeRepository = new Mock<IRepository<Recipe>>();
+            _recipeRepository.Setup(x => x.GetByAsync(It.IsAny<Expression<Func<Recipe, bool>>>(), It.IsAny<bool>()))
+                .ReturnsAsync(recipe);
+            _recipeRepository.Setup(x => x.UpdateAsync(It.IsAny<Recipe>())).ReturnsAsync(true);
+            Mock<IIgredientService> _ingredientService = new Mock<IIgredientService>();
+            var recipeService = new RecipeService(_recipeRepository.Object, _ingredientService.Object, _userRepository.Object, _photoRepository.Object);
+
+            var response = await recipeService.UpdateRecipeAsync(recipeBindingModel, recipe.Id);
+
+            Assert.False(response.IsError);
+            Assert.Equal(recipeBindingModel.Name, response.Data.Name);
+            Assert.Equal(recipeBindingModel.Description, response.Data.Description);
+            Assert.Equal(recipeBindingModel.ImagePath, response.Data.ImagePath);
+        }
+
+        [Fact]
+        public async void should_fail_recipe_doesnt_found_on_update()
+        {
+            var recipe = new Recipe()
+            {
+                Id = 1,
+                Name = "old",
+                Description = "old",
+                Image = null,
+            };
+            var recipeBindingModel = new RecipeBindingModel()
+            {
+                Name = "new",
+                Description = "new",
+                ImagePath = null,
+            };
+            Mock<IRepository<Photo>> _photoRepository = new Mock<IRepository<Photo>>();
+            Mock<IRepository<User>> _userRepository = new Mock<IRepository<User>>();
+            Mock<IRepository<Recipe>> _recipeRepository = new Mock<IRepository<Recipe>>();
+            _recipeRepository.Setup(x => x.GetByAsync(It.IsAny<Expression<Func<Recipe, bool>>>(), It.IsAny<bool>()))
+                .ReturnsAsync((Recipe)null);
+            Mock<IIgredientService> _ingredientService = new Mock<IIgredientService>();
+            var recipeService = new RecipeService(_recipeRepository.Object, _ingredientService.Object, _userRepository.Object, _photoRepository.Object);
+
+            var response = await recipeService.UpdateRecipeAsync(recipeBindingModel, recipe.Id);
+
+            Assert.True(response.IsError);
+            Assert.Equal(Error.RecipeDoesntExist, response.Errors[0].Message);
+        }
+
+        [Fact]
+        public async void should_fail_on_update()
+        {
+            var recipe = new Recipe()
+            {
+                Id = 1,
+                Name = "old",
+                Description = "old",
+                Image = null,
+            };
+            var recipeBindingModel = new RecipeBindingModel()
+            {
+                Name = "new",
+                Description = "new",
+                ImagePath = null,
+            };
+            Mock<IRepository<Photo>> _photoRepository = new Mock<IRepository<Photo>>();
+            Mock<IRepository<User>> _userRepository = new Mock<IRepository<User>>();
+            Mock<IRepository<Recipe>> _recipeRepository = new Mock<IRepository<Recipe>>();
+            _recipeRepository.Setup(x => x.GetByAsync(It.IsAny<Expression<Func<Recipe, bool>>>(), It.IsAny<bool>()))
+                .ReturnsAsync(recipe);
+            _recipeRepository.Setup(x => x.UpdateAsync(It.IsAny<Recipe>())).ReturnsAsync(false);
+            Mock<IIgredientService> _ingredientService = new Mock<IIgredientService>();
+            var recipeService = new RecipeService(_recipeRepository.Object, _ingredientService.Object, _userRepository.Object, _photoRepository.Object);
+
+            var response = await recipeService.UpdateRecipeAsync(recipeBindingModel, recipe.Id);
+
+            Assert.True(response.IsError);
+            Assert.Equal(Error.RecipeErrorWhenUpdate, response.Errors[0].Message);
+        }
+
     }
 
 }
