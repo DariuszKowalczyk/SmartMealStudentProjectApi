@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.0" />
+    <PackageReference Include="DinkToPdf" Version="1.0.8" />
     <PackageReference Include="FluentAssertions.AspNetCore.Mvc" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
@@ -21,7 +22,7 @@
     <ProjectReference Include="..\SmartMeal.Models\SmartMeal.Models.csproj" />
     <ProjectReference Include="..\SmartMeal.Service\SmartMeal.Service.csproj" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <Folder Include="Images\" />
   </ItemGroup>

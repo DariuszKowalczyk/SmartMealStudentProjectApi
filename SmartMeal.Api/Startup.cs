@@ -18,6 +18,9 @@ using Swashbuckle.AspNetCore.Swagger;
 using System.IO;
 using System.Text;
 using AutoMapper;
+using DinkToPdf;
+using DinkToPdf.Contracts;
+
 
 namespace SmartMeal.Api
 {
@@ -51,6 +54,7 @@ namespace SmartMeal.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
             string connectionString = GetConnectionString();
             services.AddDbContext<AppDbContext>(options => options.UseNpgsql(
                 connectionString, b => b.MigrationsAssembly("SmartMeal.Data")));
@@ -82,6 +86,7 @@ namespace SmartMeal.Api
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IRecipeService, RecipeService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 
             //Add repository
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
@@ -109,6 +114,12 @@ namespace SmartMeal.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            var wkHtmlToPdfPath = Path.Combine(env.ContentRootPath, $"libwkhtmltox");
+
+            CustomAssemblyLoadContext context = new CustomAssemblyLoadContext();
+            context.LoadUnmanagedLibrary(wkHtmlToPdfPath);
+
+
             app.UseCors(builder =>builder.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod());
 
             string ImagePath = Path.Combine(env.ContentRootPath, "Images");

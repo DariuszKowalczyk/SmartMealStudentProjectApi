@@ -7,6 +7,8 @@ using SmartMeal.Models.ModelsDto;
 using SmartMeal.Service.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SmartMeal.Service.Services
