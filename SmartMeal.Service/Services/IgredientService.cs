@@ -53,13 +53,16 @@ namespace SmartMeal.Service.Services
                 ingredients.Add(ingredient);
             }
 
-            var areCreated = await _igredientRepository.CreateRangeAsync(ingredients);
-
-            if (!areCreated)
+            try
             {
-               response.AddError(Error.IngredientCreateFails);
-               return response;
+                var areCreated = await _igredientRepository.CreateRangeAsync(ingredients);
             }
+            catch (Exception exception)
+            {
+                response.AddError(Error.IngredientCreateFails);
+                return response;
+            }
+
             List<IngredientDto> ingredientDtos = new List<IngredientDto>();
             foreach (var ingredient in ingredients)
             {

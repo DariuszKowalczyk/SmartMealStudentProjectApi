@@ -23,19 +23,19 @@ namespace SmartMeal.Models.Models
     public enum MealTime : int
     {
         [Description("śniadanie")]
-        Breakfast = 1,
+        Breakfast = 0,
 
         [Description("drugie śniadanie")]
-        Lunch = 2,
+        Lunch = 1,
 
         [Description("obiad")]
-        Dinner = 3,
+        Dinner = 2,
 
         [Description("podwieczorek")]
-        Timetea = 4,
+        Timetea = 3,
 
         [Description("kolacja")]
-        Supper = 5
+        Supper = 4
 
 
     }
